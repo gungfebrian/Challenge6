@@ -27,6 +27,7 @@ Challenge6 is a SwiftUI application that is currently in its foundation stage. T
 ```text
 Challenge6/
 ├── App/             # Application entry point and app-wide composition
+├── DesignSystem/    # Reusable visual foundations
 ├── Features/        # Product code grouped by feature
 └── Resources/       # Asset catalogs and other bundled resources
 ```
