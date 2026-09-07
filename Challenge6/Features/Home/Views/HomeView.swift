@@ -9,13 +9,15 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            ContentUnavailableView {
+                Label("Foundation ready", systemImage: "hammer.fill")
+            } description: {
+                Text("Start building your first feature when you are ready.")
+            }
+            .padding(AppSpacing.large)
+            .navigationTitle("Challenge6")
         }
-        .padding(AppSpacing.large)
     }
 }
 
