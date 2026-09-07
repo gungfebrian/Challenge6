@@ -22,6 +22,15 @@ Challenge6 is a SwiftUI application that is currently in its foundation stage. T
 - Prefer native SwiftUI and system APIs before adding dependencies.
 - Keep every commit focused and leave the project buildable.
 
+## Project structure
+
+```text
+Challenge6/
+├── App/             # Application entry point and app-wide composition
+├── Features/        # Product code grouped by feature
+└── Resources/       # Asset catalogs and other bundled resources
+```
+
 ## Status
 
 The project contains repository and application foundations only. Product behavior will be introduced in later work.
