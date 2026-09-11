@@ -3,6 +3,7 @@
 //  Challenge6
 //
 
+import Foundation
 import Observation
 
 @MainActor
@@ -15,7 +16,12 @@ final class AnalysisViewModel {
         case failure(String)
     }
 
-    var message = ""
+    var message = "" {
+        didSet {
+            guard message != oldValue, !isAnalyzing else { return }
+            state = .idle
+        }
+    }
 
     // Why: One state prevents loading, result, and error UI from being active together.
     private(set) var state: State = .idle
@@ -27,6 +33,27 @@ final class AnalysisViewModel {
         self.mlService = mlService
     }
 
-    // The analysis action is intentionally learner-owned. Its first version should validate
-    // the message, await MLService, and make every state transition explicit.
+    var isAnalyzing: Bool {
+        state == .loading
+    }
+
+    func analyze() async {
+        guard !isAnalyzing else { return }
+
+        let trimmedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedMessage.isEmpty else {
+            state = .failure("Enter a message before analyzing.")
+            return
+        }
+
+        state = .loading
+
+        do {
+            state = .success(try await mlService.analyze(AnalysisRequest(text: trimmedMessage)))
+        } catch is CancellationError {
+            state = .idle
+        } catch {
+            state = .failure("The message could not be analyzed. Please try again.")
+        }
+    }
 }
