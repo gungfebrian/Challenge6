@@ -3,6 +3,7 @@
 //  Challenge6
 //
 
+import Accessibility
 import SwiftUI
 
 struct AnalysisView: View {
@@ -53,8 +54,16 @@ struct AnalysisView: View {
                     .accessibilityHint("Checks the entered message using the demo service.")
                 }
                 .listRowBackground(Color.clear)
+
+                Section("Status") {
+                    AnalysisStatusView(state: viewModel.state)
+                }
             }
             .navigationTitle("Message Check")
+            .onChange(of: viewModel.state) { _, newState in
+                guard let announcement = newState.accessibilityAnnouncement else { return }
+                AccessibilityNotification.Announcement(announcement).post()
+            }
         }
     }
 }
