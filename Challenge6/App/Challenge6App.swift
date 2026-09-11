@@ -11,7 +11,7 @@ import SwiftUI
 struct Challenge6App: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            AnalysisView(mlService: DemoMLService())
         }
     }
 }
