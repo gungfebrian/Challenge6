@@ -1,6 +1,6 @@
 # Challenge6
 
-Challenge6 is a SwiftUI application that is currently in its foundation stage. The repository is intentionally small so product features can be added without carrying premature architecture or dependencies.
+Challenge6 is a learning-first SwiftUI application for exploring an on-device suspicious-message analysis flow. It contains one small, runnable MVVM feature without unnecessary architecture or third-party dependencies.
 
 ## Requirements
 
@@ -22,16 +22,27 @@ Challenge6 is a SwiftUI application that is currently in its foundation stage. T
 - Prefer native SwiftUI and system APIs before adding dependencies.
 - Keep every commit focused and leave the project buildable.
 
+## Learn MVVM
+
+Read the [Indonesian MVVM and file-structure guide](docs/mvvm-learning-guide.md) before expanding the feature. It explains every folder, traces one complete interaction, documents the accessibility choices, and provides exercises in increasing difficulty.
+
+The current `DemoMLService` is deterministic placeholder logic. It exists only to make the architecture observable while learning; it is not a trained model and must not be treated as safety advice.
+
 ## Project structure
 
 ```text
 Challenge6/
-├── App/             # Application entry point and app-wide composition
-├── DesignSystem/    # Reusable visual foundations
-├── Features/        # Product code grouped by feature
-└── Resources/       # Asset catalogs and other bundled resources
+├── App/                         # Application entry point and dependency composition
+├── DesignSystem/                # Reusable visual foundations
+├── Features/
+│   └── Analysis/
+│       ├── Models/              # Stable feature data
+│       ├── Services/            # Protocol and concrete implementations
+│       ├── ViewModels/          # UI state and actions
+│       └── Views/               # SwiftUI presentation
+└── Resources/                   # Asset catalogs and bundled resources
 ```
 
 ## Status
 
-The project contains repository and application foundations only. Product behavior will be introduced in later work.
+The project demonstrates input validation, asynchronous state transitions, dependency injection, accessible UI feedback, and a replaceable service boundary. A real Core ML model and production inference service remain future learning steps.
