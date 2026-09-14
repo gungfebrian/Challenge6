@@ -69,5 +69,5 @@ struct AnalysisView: View {
 }
 
 #Preview {
-    AnalysisView(mlService: DemoMLService())
+    AnalysisView(mlService: MultinomialNaiveBayesService())
 }
