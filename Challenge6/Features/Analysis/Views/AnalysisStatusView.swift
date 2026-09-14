@@ -21,7 +21,7 @@ struct AnalysisStatusView: View {
                 VStack(alignment: .leading, spacing: AppSpacing.small) {
                     Text("Analyzing message")
                         .font(.headline)
-                    Text("The demo service is checking the text.")
+                    Text("The Naive Bayes service is checking the text.")
                         .foregroundStyle(.secondary)
                 }
             }
