@@ -25,7 +25,7 @@ struct AnalysisView: View {
                 } header: {
                     Text("Message")
                 } footer: {
-                    Text("This learning demo runs on your device and is not real safety advice.")
+                    Text("This learning demo uses a tiny local dataset and is not real safety advice.")
                 }
 
                 Section {
