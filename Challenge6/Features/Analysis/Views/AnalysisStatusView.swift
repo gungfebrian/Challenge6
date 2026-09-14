@@ -89,18 +89,18 @@ private struct ResultContent: View {
                 .foregroundStyle(tint)
 
             Gauge(value: result.confidence) {
-                Text("Demo confidence")
+                Text("Model confidence")
             } currentValueLabel: {
                 Text(confidenceText)
             }
             .tint(tint)
 
-            Text("This result comes from simple demo keywords, not a trained model. Do not use it as safety advice.")
+            Text("This learning result comes from a tiny in-app training dataset. Do not use it as safety advice.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(title). Demo confidence \(confidenceText). This is not safety advice.")
+        .accessibilityLabel("\(title). Model confidence \(confidenceText). This is not safety advice.")
     }
 }
 
