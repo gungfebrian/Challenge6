@@ -58,9 +58,9 @@ private struct ResultContent: View {
     private var title: String {
         switch result.label {
         case .suspicious:
-            "Suspicious patterns found"
+            "Likely spam"
         case .legitimate:
-            "No suspicious patterns found"
+            "Likely not spam"
         }
     }
 
@@ -113,8 +113,8 @@ extension AnalysisViewModel.State {
             "Analyzing message."
         case let .success(result):
             result.label == .suspicious
-                ? "Analysis complete. Suspicious patterns found."
-                : "Analysis complete. No suspicious patterns found."
+                ? "Analysis complete. Likely spam."
+                : "Analysis complete. Likely not spam."
         case let .failure(message):
             "Unable to analyze. \(message)"
         }
