@@ -1,6 +1,6 @@
 # Challenge6
 
-Challenge6 is a learning-first SwiftUI application for exploring an on-device suspicious-message analysis flow. It contains one small, runnable MVVM feature without unnecessary architecture or third-party dependencies.
+Challenge6 is a learning-first SwiftUI application for exploring an on-device spam-analysis flow. It contains one small, runnable MVVM feature and a readable Multinomial Naive Bayes implementation without third-party dependencies.
 
 ## Requirements
 
@@ -26,7 +26,7 @@ Challenge6 is a learning-first SwiftUI application for exploring an on-device su
 
 Read the [Indonesian MVVM and file-structure guide](docs/mvvm-learning-guide.md) before expanding the feature. It explains every folder, traces one complete interaction, documents the accessibility choices, and provides exercises in increasing difficulty.
 
-The current `DemoMLService` is deterministic placeholder logic. It exists only to make the architecture observable while learning; it is not a trained model and must not be treated as safety advice.
+The app currently uses `MultinomialNaiveBayesService`, which trains a readable classifier from a tiny embedded teaching dataset. This keeps the algorithm observable while learning; it is not a production model and must not be treated as safety advice.
 
 ## Project structure
 
@@ -45,4 +45,12 @@ Challenge6/
 
 ## Status
 
-The project demonstrates input validation, asynchronous state transitions, dependency injection, accessible UI feedback, and a replaceable service boundary. A real Core ML model and production inference service remain future learning steps.
+The project demonstrates input validation, asynchronous state transitions, dependency injection, accessible UI feedback, tokenization, Laplace smoothing, log-probability scoring, and a replaceable service boundary. A converted Core ML model and production-quality training data remain future learning steps.
+
+## Classifier checks
+
+Run the focused algorithm checks without launching the app:
+
+```shell
+./Scripts/run-classifier-checks.sh
+```
