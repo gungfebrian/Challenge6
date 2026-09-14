@@ -59,7 +59,7 @@ struct AnalysisView: View {
                     AnalysisStatusView(state: viewModel.state)
                 }
             }
-            .navigationTitle("Message Check")
+            .navigationTitle("Spam Check")
             .onChange(of: viewModel.state) { _, newState in
                 guard let announcement = newState.accessibilityAnnouncement else { return }
                 AccessibilityNotification.Announcement(announcement).post()
