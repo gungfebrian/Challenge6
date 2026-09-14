@@ -17,7 +17,9 @@ Challenge6/
 │       │   └── AnalysisResult.swift
 │       ├── Services/
 │       │   ├── MLService.swift
-│       │   └── DemoMLService.swift
+│       │   ├── DemoMLService.swift
+│       │   ├── MultinomialNaiveBayesClassifier.swift
+│       │   └── MultinomialNaiveBayesService.swift
 │       ├── ViewModels/
 │       │   └── AnalysisViewModel.swift
 │       └── Views/
@@ -39,6 +41,8 @@ AnalysisView
 AnalysisViewModel
       ↓ membuat AnalysisRequest
 MLService
+      ↓ MultinomialNaiveBayesService
+MultinomialNaiveBayesClassifier
       ↓ mengembalikan AnalysisResult
 AnalysisViewModel.State
       ↓ dibaca oleh View
@@ -78,13 +82,15 @@ Satu enum `State` mencegah kombinasi yang tidak masuk akal, misalnya loading dan
 
 ### Service
 
-`MLService` adalah protocol atau kontrak. ViewModel hanya tahu bahwa ia dapat mengirim `AnalysisRequest` dan menerima `AnalysisResult`; ViewModel tidak perlu tahu apakah implementasinya memakai Core ML, data lokal, atau test double.
+`MLService` adalah protocol atau kontrak. ViewModel hanya tahu bahwa ia dapat mengirim `AnalysisRequest` dan menerima `AnalysisResult`; ViewModel tidak perlu tahu apakah implementasinya memakai perhitungan Swift, Core ML, atau test double.
 
-`DemoMLService` adalah implementasi sementara agar alur MVVM dapat dijalankan. Service ini hanya mencari beberapa keyword sederhana dan bukan model machine learning. Hasilnya tidak boleh dipakai sebagai nasihat keamanan.
+`MultinomialNaiveBayesService` adalah adapter yang memenuhi kontrak tersebut. Ia memiliki dataset kecil untuk belajar dan menyerahkan perhitungan ke `MultinomialNaiveBayesClassifier`. Classifier melakukan tokenisasi, menghitung frekuensi kata per kelas, menerapkan Laplace smoothing, lalu membandingkan log probability. Dataset kecilnya bukan data produksi, sehingga hasilnya tidak boleh dipakai sebagai nasihat keamanan.
+
+`DemoMLService` tetap tersedia sebagai pembanding sederhana, tetapi tidak dipakai oleh aplikasi utama.
 
 ### App
 
-`Challenge6App` adalah composition root: tempat objek konkret dipilih dan disambungkan. Di sinilah `DemoMLService` diberikan kepada `AnalysisView`. Ketika model asli tersedia, penggantian implementasi dimulai dari titik ini.
+`Challenge6App` adalah composition root: tempat objek konkret dipilih dan disambungkan. Di sinilah `MultinomialNaiveBayesService` diberikan kepada `AnalysisView`. Ketika model Core ML tersedia, penggantian implementasi dimulai dari titik ini.
 
 ## Ikuti satu interaksi di kode
 
@@ -93,7 +99,7 @@ Satu enum `State` mencegah kombinasi yang tidak masuk akal, misalnya loading dan
 3. ViewModel membersihkan whitespace dan menolak input kosong.
 4. ViewModel mengubah state menjadi `.loading`.
 5. ViewModel membuat `AnalysisRequest` dan memanggil `MLService`.
-6. Service mengembalikan `AnalysisResult` atau melempar error.
+6. Service meminta classifier menghitung probabilitas lalu mengembalikan `AnalysisResult` atau melempar error.
 7. ViewModel memilih `.success`, `.failure`, atau `.idle` jika task dibatalkan.
 8. SwiftUI membaca state baru dan memperbarui `AnalysisStatusView`.
 
@@ -128,7 +134,7 @@ Kerjakan satu latihan per commit agar penyebab setiap perubahan mudah dipahami.
 3. Buat `FailingMLService` khusus Preview untuk mempelajari error path.
 4. Tulis unit test untuk transisi `idle → loading → success` dan input kosong.
 5. Tambahkan tombol reset melalui method ViewModel, bukan dengan mengubah `state` dari View.
-6. Setelah model tersedia, buat `CoreMLService` baru yang memenuhi protocol `MLService`.
+6. Setelah alur saat ini dipahami, buat `CoreMLService` baru yang memenuhi protocol `MLService`, lalu ganti satu baris dependency di `Challenge6App`.
 
 ## Tanda struktur mulai perlu berkembang
 
@@ -145,7 +151,7 @@ Sampai kondisi tersebut muncul, struktur kecil dan eksplisit ini lebih baik untu
 ## Kesalahan umum
 
 - Menjalankan Core ML langsung dari View.
-- Membuat `DemoMLService` langsung di dalam ViewModel sehingga dependency sulit diganti.
+- Membuat `MultinomialNaiveBayesService` langsung di dalam ViewModel sehingga dependency sulit diganti.
 - Membiarkan View mengubah `state` secara langsung.
 - Menggunakan beberapa boolean seperti `isLoading`, `hasError`, dan `hasResult` yang dapat saling bertentangan.
 - Menaruh warna atau nama SF Symbol di Model.

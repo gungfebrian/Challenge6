@@ -23,10 +23,8 @@ final class AnalysisViewModel {
         }
     }
 
-    // Why: One state prevents loading, result, and error UI from being active together.
     private(set) var state: State = .idle
 
-    // Why: Depending on the protocol keeps Core ML out of view-state management.
     private let mlService: any MLService
 
     init(mlService: any MLService) {
