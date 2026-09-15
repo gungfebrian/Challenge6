@@ -8,6 +8,7 @@
 import SwiftUI
 
 @main
+/// Builds the production dependencies and presents the app's first screen.
 struct Challenge6App: App {
     var body: some Scene {
         WindowGroup {
