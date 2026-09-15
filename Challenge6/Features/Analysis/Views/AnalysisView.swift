@@ -6,6 +6,7 @@
 import Accessibility
 import SwiftUI
 
+/// Collects the message, forwards user actions to the view model, and renders its state.
 struct AnalysisView: View {
     @State private var viewModel: AnalysisViewModel
 
