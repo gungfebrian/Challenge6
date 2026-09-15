@@ -8,6 +8,7 @@ import Observation
 
 @MainActor
 @Observable
+/// Owns the analysis screen's input and translates service outcomes into UI state.
 final class AnalysisViewModel {
     enum State: Equatable {
         case idle
