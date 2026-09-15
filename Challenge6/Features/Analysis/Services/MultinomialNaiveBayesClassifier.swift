@@ -3,10 +3,11 @@
 //  Challenge6
 //
 
-
 import Foundation
 
+/// A local text classifier trained from labeled examples and represented by token counts.
 struct MultinomialNaiveBayesClassifier: Sendable {
+    /// One labeled document used to build the classifier's vocabulary and class statistics.
     struct TrainingExample: Sendable {
         let text: String
         let label: MessageLabel
@@ -32,14 +33,15 @@ struct MultinomialNaiveBayesClassifier: Sendable {
     private let vocabulary: Set<String>
     private let smoothing: Double
 
+    /// Trains the classifier once by aggregating the supplied examples per message label.
     init(trainingExamples: [TrainingExample], smoothing: Double = 1) {
-        precondition(smoothing > 0, "Smoothing must be greater than zero.")  //laplace
+        precondition(smoothing > 0, "Smoothing must be greater than zero.")
 
         var suspicious = ClassStatistics()
         var legitimate = ClassStatistics()
         var vocabulary: Set<String> = []
 
-        for example in trainingExamples { //trainingg
+        for example in trainingExamples {
             let tokens = Self.tokenize(example.text)
             vocabulary.formUnion(tokens)
 
@@ -62,6 +64,7 @@ struct MultinomialNaiveBayesClassifier: Sendable {
         self.smoothing = smoothing
     }
 
+    /// Scores known input tokens against both labels and returns the stronger prediction.
     func predict(text: String) -> AnalysisResult {
         let knownTokens = Self.tokenize(text).filter(vocabulary.contains)
         let documentCount = suspicious.documentCount + legitimate.documentCount
@@ -96,7 +99,8 @@ struct MultinomialNaiveBayesClassifier: Sendable {
         )
     }
 
-    private func logScore( //the laplace smoothing
+    /// Combines a class prior with Laplace-smoothed token likelihoods in log space.
+    private func logScore(
         tokens: [String],
         statistics: ClassStatistics,
         totalDocumentCount: Int
