@@ -3,7 +3,7 @@
 //  Challenge6
 //
 
-
+/// Adapts the app's ML service contract to the local multinomial Naive Bayes classifier.
 struct MultinomialNaiveBayesService: MLService {
     private let classifier: MultinomialNaiveBayesClassifier
 

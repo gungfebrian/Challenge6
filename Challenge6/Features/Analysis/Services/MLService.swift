@@ -3,8 +3,8 @@
 //  Challenge6
 //
 
+/// Boundary used by the view model to request a prediction without knowing its implementation.
 protocol MLService {
-    // Why: The app depends on its own domain types instead of a generated Core ML interface.
-    // This also leaves room for a small test double when the learner reaches dependency injection.
+    /// Analyzes domain input and either returns a renderable result or throws an error.
     func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult
 }
