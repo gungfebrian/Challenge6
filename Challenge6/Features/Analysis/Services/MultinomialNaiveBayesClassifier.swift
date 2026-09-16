@@ -66,16 +66,17 @@ struct MultinomialNaiveBayesClassifier: Sendable {
 
     /// Scores known input tokens against both labels and returns the stronger prediction.
     func predict(text: String) -> AnalysisResult {
-        let knownTokens = TextTokenizer.tokens(in: text).filter(vocabulary.contains)
+        let knownTokenBag = TokenBag(tokens: TextTokenizer.tokens(in: text))
+            .keeping(vocabulary)
         let documentCount = suspicious.documentCount + legitimate.documentCount
 
         let suspiciousScore = logScore(
-            tokens: knownTokens,
+            tokenBag: knownTokenBag,
             statistics: suspicious,
             totalDocumentCount: documentCount
         )
         let legitimateScore = logScore(
-            tokens: knownTokens,
+            tokenBag: knownTokenBag,
             statistics: legitimate,
             totalDocumentCount: documentCount
         )
@@ -101,17 +102,18 @@ struct MultinomialNaiveBayesClassifier: Sendable {
 
     /// Combines a class prior with Laplace-smoothed token likelihoods in log space.
     private func logScore(
-        tokens: [String],
+        tokenBag: TokenBag,
         statistics: ClassStatistics,
         totalDocumentCount: Int
     ) -> Double {
         let prior = Double(statistics.documentCount) / Double(totalDocumentCount)
         let denominator = Double(statistics.tokenCount) + smoothing * Double(vocabulary.count)
 
-        return tokens.reduce(log(prior)) { score, token in
+        return tokenBag.counts.reduce(log(prior)) { score, entry in
+            let (token, frequency) = entry
             let observedCount = Double(statistics.countsByToken[token, default: 0])
             let likelihood = (observedCount + smoothing) / denominator
-            return score + log(likelihood)
+            return score + Double(frequency) * log(likelihood)
         }
     }
 
