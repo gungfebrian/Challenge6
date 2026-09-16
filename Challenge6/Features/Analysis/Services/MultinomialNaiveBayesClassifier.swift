@@ -42,7 +42,7 @@ struct MultinomialNaiveBayesClassifier: Sendable {
         var vocabulary: Set<String> = []
 
         for example in trainingExamples {
-            let tokens = Self.tokenize(example.text)
+            let tokens = TextTokenizer.tokens(in: example.text)
             vocabulary.formUnion(tokens)
 
             switch example.label {
@@ -66,7 +66,7 @@ struct MultinomialNaiveBayesClassifier: Sendable {
 
     /// Scores known input tokens against both labels and returns the stronger prediction.
     func predict(text: String) -> AnalysisResult {
-        let knownTokens = Self.tokenize(text).filter(vocabulary.contains)
+        let knownTokens = TextTokenizer.tokens(in: text).filter(vocabulary.contains)
         let documentCount = suspicious.documentCount + legitimate.documentCount
 
         let suspiciousScore = logScore(
@@ -122,10 +122,4 @@ struct MultinomialNaiveBayesClassifier: Sendable {
         1 / (1 + exp(losingScore - winningScore))
     }
 
-    private static func tokenize(_ text: String) -> [String] {
-        text
-            .lowercased()
-            .split { !$0.isLetter && !$0.isNumber }
-            .map(String.init)
-    }
 }
