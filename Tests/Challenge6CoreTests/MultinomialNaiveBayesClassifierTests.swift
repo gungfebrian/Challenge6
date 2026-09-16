@@ -1,8 +1,7 @@
 import Foundation
 
-@main
 enum MultinomialNaiveBayesClassifierTests {
-    static func main() async {
+    static func run() async {
         let classifier = MultinomialNaiveBayesClassifier(
             trainingExamples: [
                 .init(text: "win cash cash", label: .suspicious),
@@ -15,8 +14,9 @@ enum MultinomialNaiveBayesClassifierTests {
             prediction.label == .suspicious,
             "Repeated suspicious words should produce a suspicious label"
         )
-        expect(
-            abs(prediction.confidence - (324.0 / 373.0)) < 0.000_001,
+        expectApproximatelyEqual(
+            prediction.confidence,
+            324.0 / 373.0,
             "Confidence should match the hand-calculated Laplace-smoothed probability"
         )
 
@@ -39,7 +39,6 @@ enum MultinomialNaiveBayesClassifierTests {
 
         await checkLearningServiceExamples()
 
-        print("Classifier checks passed")
     }
 
     private static func checkLearningServiceExamples() async {
@@ -66,12 +65,4 @@ enum MultinomialNaiveBayesClassifierTests {
         }
     }
 
-    private static func expect(
-        _ condition: @autoclosure () -> Bool,
-        _ message: String
-    ) {
-        guard condition() else {
-            fatalError(message)
-        }
-    }
 }
