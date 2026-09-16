@@ -81,23 +81,10 @@ struct MultinomialNaiveBayesClassifier: Sendable {
             totalDocumentCount: documentCount
         )
 
-        if suspiciousScore > legitimateScore {
-            return AnalysisResult(
-                label: .suspicious,
-                confidence: normalizedWinningProbability(
-                    winningScore: suspiciousScore,
-                    losingScore: legitimateScore
-                )
-            )
-        }
-
-        return AnalysisResult(
-            label: .legitimate,
-            confidence: normalizedWinningProbability(
-                winningScore: legitimateScore,
-                losingScore: suspiciousScore
-            )
-        )
+        return PredictionScores(
+            suspicious: suspiciousScore,
+            legitimate: legitimateScore
+        ).result
     }
 
     /// Combines a class prior with Laplace-smoothed token likelihoods in log space.
@@ -115,13 +102,6 @@ struct MultinomialNaiveBayesClassifier: Sendable {
             let likelihood = (observedCount + smoothing) / denominator
             return score + Double(frequency) * log(likelihood)
         }
-    }
-
-    private func normalizedWinningProbability(
-        winningScore: Double,
-        losingScore: Double
-    ) -> Double {
-        1 / (1 + exp(losingScore - winningScore))
     }
 
 }
