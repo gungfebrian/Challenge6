@@ -18,12 +18,12 @@ struct MultinomialNaiveBayesClassifier: Sendable {
         var tokenCount = 0
         var countsByToken: [String: Int] = [:]
 
-        mutating func observe(tokens: [String]) {
+        mutating func observe(_ tokenBag: TokenBag) {
             documentCount += 1
-            tokenCount += tokens.count
+            tokenCount += tokenBag.totalCount
 
-            for token in tokens {
-                countsByToken[token, default: 0] += 1
+            for (token, count) in tokenBag.counts {
+                countsByToken[token, default: 0] += count
             }
         }
     }
@@ -42,14 +42,14 @@ struct MultinomialNaiveBayesClassifier: Sendable {
         var vocabulary: Set<String> = []
 
         for example in trainingExamples {
-            let tokens = TextTokenizer.tokens(in: example.text)
-            vocabulary.formUnion(tokens)
+            let tokenBag = TokenBag(tokens: TextTokenizer.tokens(in: example.text))
+            vocabulary.formUnion(tokenBag.counts.keys)
 
             switch example.label {
             case .suspicious:
-                suspicious.observe(tokens: tokens)
+                suspicious.observe(tokenBag)
             case .legitimate:
-                legitimate.observe(tokens: tokens)
+                legitimate.observe(tokenBag)
             }
         }
 
