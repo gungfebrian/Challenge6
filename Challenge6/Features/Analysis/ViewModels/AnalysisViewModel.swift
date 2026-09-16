@@ -61,7 +61,13 @@ final class AnalysisViewModel {
         state = .loading
 
         do {
-            state = .success(try await mlService.analyze(request))
+            let result = try await mlService.analyze(request)
+            guard AnalysisRequest(rawText: message)?.text == request.text else {
+                state = .idle
+                return
+            }
+
+            state = .success(result)
         } catch is CancellationError {
             state = .idle
         } catch {

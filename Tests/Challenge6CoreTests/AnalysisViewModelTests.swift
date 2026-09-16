@@ -47,6 +47,25 @@ enum AnalysisViewModelTests {
             cancellingViewModel.state == .idle,
             "Cancellation should restore the idle state"
         )
+
+        let controlledService = ControlledMLService()
+        let staleViewModel = AnalysisViewModel(mlService: controlledService)
+        staleViewModel.message = "first message"
+        let analysisTask = Task {
+            await staleViewModel.analyze()
+        }
+
+        await controlledService.waitUntilRequested()
+        staleViewModel.message = "second message"
+        await controlledService.succeed(
+            with: AnalysisResult(label: .suspicious, confidence: 0.9)
+        )
+        await analysisTask.value
+
+        expect(
+            staleViewModel.state == .idle,
+            "A result for older input should not replace state for newer input"
+        )
     }
 }
 
@@ -83,5 +102,26 @@ private struct FailingMLService: MLService {
 private struct CancellingMLService: MLService {
     func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
         throw CancellationError()
+    }
+}
+
+private actor ControlledMLService: MLService {
+    private var continuation: CheckedContinuation<AnalysisResult, Error>?
+
+    func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
+        try await withCheckedThrowingContinuation { continuation in
+            self.continuation = continuation
+        }
+    }
+
+    func waitUntilRequested() async {
+        while continuation == nil {
+            await Task.yield()
+        }
+    }
+
+    func succeed(with result: AnalysisResult) {
+        continuation?.resume(returning: result)
+        continuation = nil
     }
 }
