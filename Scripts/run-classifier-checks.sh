@@ -17,11 +17,13 @@ swiftc \
     "$repository_directory/Challenge6/Features/Analysis/Services/MultinomialNaiveBayesClassifier.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/SpamTrainingDataset.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MultinomialNaiveBayesService.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/ViewModels/AnalysisViewModel.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestSupport.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TextTokenizerTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TokenBagTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/PredictionScoresTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TrainingDataValidatorTests.swift" \
+    "$repository_directory/Tests/Challenge6CoreTests/AnalysisRequestTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/MultinomialNaiveBayesClassifierTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestMain.swift" \
     -o "$test_binary"

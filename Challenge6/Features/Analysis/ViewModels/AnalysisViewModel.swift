@@ -39,8 +39,7 @@ final class AnalysisViewModel {
     func analyze() async {
         guard !isAnalyzing else { return }
 
-        let trimmedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedMessage.isEmpty else {
+        guard let request = AnalysisRequest(rawText: message) else {
             state = .failure("Enter a message before analyzing.")
             return
         }
@@ -48,7 +47,7 @@ final class AnalysisViewModel {
         state = .loading
 
         do {
-            state = .success(try await mlService.analyze(AnalysisRequest(text: trimmedMessage)))
+            state = .success(try await mlService.analyze(request))
         } catch is CancellationError {
             state = .idle
         } catch {
