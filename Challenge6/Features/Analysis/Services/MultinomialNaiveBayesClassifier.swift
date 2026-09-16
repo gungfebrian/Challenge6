@@ -35,7 +35,12 @@ struct MultinomialNaiveBayesClassifier: Sendable {
 
     /// Trains the classifier once by aggregating the supplied examples per message label.
     init(trainingExamples: [TrainingExample], smoothing: Double = 1) {
-        precondition(smoothing > 0, "Smoothing must be greater than zero.")
+        if let issue = TrainingDataValidator.issue(
+            examples: trainingExamples,
+            smoothing: smoothing
+        ) {
+            preconditionFailure(issue.message)
+        }
 
         var suspicious = ClassStatistics()
         var legitimate = ClassStatistics()
@@ -52,11 +57,6 @@ struct MultinomialNaiveBayesClassifier: Sendable {
                 legitimate.observe(tokenBag)
             }
         }
-
-        precondition(
-            suspicious.documentCount > 0 && legitimate.documentCount > 0,
-            "Training data must contain both labels."
-        )
 
         self.suspicious = suspicious
         self.legitimate = legitimate

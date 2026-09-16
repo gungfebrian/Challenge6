@@ -13,6 +13,7 @@ swiftc \
     "$repository_directory/Challenge6/Features/Analysis/Services/TextTokenizer.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/TokenBag.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/PredictionScores.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/Services/TrainingDataValidator.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MultinomialNaiveBayesClassifier.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/SpamTrainingDataset.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MultinomialNaiveBayesService.swift" \
@@ -20,6 +21,7 @@ swiftc \
     "$repository_directory/Tests/Challenge6CoreTests/TextTokenizerTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TokenBagTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/PredictionScoresTests.swift" \
+    "$repository_directory/Tests/Challenge6CoreTests/TrainingDataValidatorTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/MultinomialNaiveBayesClassifierTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestMain.swift" \
     -o "$test_binary"

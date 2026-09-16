@@ -4,6 +4,7 @@ enum Challenge6CoreTests {
         TextTokenizerTests.run()
         TokenBagTests.run()
         PredictionScoresTests.run()
+        TrainingDataValidatorTests.run()
         await MultinomialNaiveBayesClassifierTests.run()
 
         print("Challenge6 checks passed")
