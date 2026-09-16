@@ -37,6 +37,16 @@ enum AnalysisViewModelTests {
             failingViewModel.state == .failure(.serviceUnavailable),
             "Service errors should become renderable failures"
         )
+
+        let cancellingViewModel = AnalysisViewModel(mlService: CancellingMLService())
+        cancellingViewModel.message = "hello"
+
+        await cancellingViewModel.analyze()
+
+        expect(
+            cancellingViewModel.state == .idle,
+            "Cancellation should restore the idle state"
+        )
     }
 }
 
@@ -67,5 +77,11 @@ private struct FailingMLService: MLService {
 
     func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
         throw Failure.unavailable
+    }
+}
+
+private struct CancellingMLService: MLService {
+    func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
+        throw CancellationError()
     }
 }
