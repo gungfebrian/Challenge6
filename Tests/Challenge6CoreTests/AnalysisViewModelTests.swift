@@ -10,6 +10,37 @@ enum AnalysisViewModelTests {
             viewModel.state == .failure(.emptyInput),
             "Blank input should produce a typed empty-input failure"
         )
+
+        let expectedResult = AnalysisResult(label: .suspicious, confidence: 0.82)
+        let recordingService = RecordingMLService(result: expectedResult)
+        let successfulViewModel = AnalysisViewModel(mlService: recordingService)
+        successfulViewModel.message = "  urgent click  "
+
+        await successfulViewModel.analyze()
+
+        expect(
+            successfulViewModel.state == .success(expectedResult),
+            "Successful analysis should publish its result"
+        )
+        let receivedText = await recordingService.receivedText
+        expect(
+            receivedText == "urgent click",
+            "The ViewModel should send normalized input to the service"
+        )
+    }
+}
+
+private actor RecordingMLService: MLService {
+    private(set) var receivedText: String?
+    private let result: AnalysisResult
+
+    init(result: AnalysisResult) {
+        self.result = result
+    }
+
+    func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
+        receivedText = request.text
+        return result
     }
 }
 
