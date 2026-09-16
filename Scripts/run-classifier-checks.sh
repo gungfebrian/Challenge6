@@ -14,6 +14,7 @@ swiftc \
     "$repository_directory/Challenge6/Features/Analysis/Services/TokenBag.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/PredictionScores.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MultinomialNaiveBayesClassifier.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/Services/SpamTrainingDataset.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MultinomialNaiveBayesService.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestSupport.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TextTokenizerTests.swift" \
