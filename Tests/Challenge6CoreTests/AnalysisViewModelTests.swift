@@ -27,6 +27,16 @@ enum AnalysisViewModelTests {
             receivedText == "urgent click",
             "The ViewModel should send normalized input to the service"
         )
+
+        let failingViewModel = AnalysisViewModel(mlService: FailingMLService())
+        failingViewModel.message = "hello"
+
+        await failingViewModel.analyze()
+
+        expect(
+            failingViewModel.state == .failure(.serviceUnavailable),
+            "Service errors should become renderable failures"
+        )
     }
 }
 
@@ -47,5 +57,15 @@ private actor RecordingMLService: MLService {
 private struct UnexpectedCallService: MLService {
     func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
         fatalError("The ML service should not receive blank input")
+    }
+}
+
+private struct FailingMLService: MLService {
+    enum Failure: Error {
+        case unavailable
+    }
+
+    func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
+        throw Failure.unavailable
     }
 }
