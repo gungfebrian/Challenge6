@@ -10,11 +10,25 @@ import Observation
 @Observable
 /// Owns the analysis screen's input and translates service outcomes into UI state.
 final class AnalysisViewModel {
+    enum Failure: Equatable {
+        case emptyInput
+        case serviceUnavailable
+
+        var message: String {
+            switch self {
+            case .emptyInput:
+                "Enter a message before analyzing."
+            case .serviceUnavailable:
+                "The message could not be analyzed. Please try again."
+            }
+        }
+    }
+
     enum State: Equatable {
         case idle
         case loading
         case success(AnalysisResult)
-        case failure(String)
+        case failure(Failure)
     }
 
     var message = "" {
@@ -40,7 +54,7 @@ final class AnalysisViewModel {
         guard !isAnalyzing else { return }
 
         guard let request = AnalysisRequest(rawText: message) else {
-            state = .failure("Enter a message before analyzing.")
+            state = .failure(.emptyInput)
             return
         }
 
@@ -51,7 +65,7 @@ final class AnalysisViewModel {
         } catch is CancellationError {
             state = .idle
         } catch {
-            state = .failure("The message could not be analyzed. Please try again.")
+            state = .failure(.serviceUnavailable)
         }
     }
 }

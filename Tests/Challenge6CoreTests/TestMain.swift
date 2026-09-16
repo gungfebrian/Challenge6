@@ -7,6 +7,7 @@ enum Challenge6CoreTests {
         TrainingDataValidatorTests.run()
         AnalysisRequestTests.run()
         await MultinomialNaiveBayesClassifierTests.run()
+        await AnalysisViewModelTests.run()
 
         print("Challenge6 checks passed")
     }

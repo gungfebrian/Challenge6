@@ -31,19 +31,19 @@ struct AnalysisStatusView: View {
         case let .success(result):
             ResultContent(result: result)
 
-        case let .failure(message):
+        case let .failure(failure):
             Label {
                 VStack(alignment: .leading, spacing: AppSpacing.small) {
                     Text("Unable to analyze")
                         .font(.headline)
-                    Text(message)
+                    Text(failure.message)
                 }
             } icon: {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .foregroundStyle(.orange)
             }
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("Unable to analyze. \(message)")
+            .accessibilityLabel("Unable to analyze. \(failure.message)")
         }
     }
 }
@@ -115,8 +115,8 @@ extension AnalysisViewModel.State {
             result.label == .suspicious
                 ? "Analysis complete. Likely spam."
                 : "Analysis complete. Likely not spam."
-        case let .failure(message):
-            "Unable to analyze. \(message)"
+        case let .failure(failure):
+            "Unable to analyze. \(failure.message)"
         }
     }
 }

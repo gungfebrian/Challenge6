@@ -25,6 +25,7 @@ swiftc \
     "$repository_directory/Tests/Challenge6CoreTests/TrainingDataValidatorTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/AnalysisRequestTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/MultinomialNaiveBayesClassifierTests.swift" \
+    "$repository_directory/Tests/Challenge6CoreTests/AnalysisViewModelTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestMain.swift" \
     -o "$test_binary"
 
