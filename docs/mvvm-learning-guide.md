@@ -18,6 +18,11 @@ Challenge6/
 │       ├── Services/
 │       │   ├── MLService.swift
 │       │   ├── DemoMLService.swift
+│       │   ├── TextTokenizer.swift
+│       │   ├── TokenBag.swift
+│       │   ├── PredictionScores.swift
+│       │   ├── TrainingDataValidator.swift
+│       │   ├── SpamTrainingDataset.swift
 │       │   ├── MultinomialNaiveBayesClassifier.swift
 │       │   └── MultinomialNaiveBayesService.swift
 │       ├── ViewModels/
@@ -74,17 +79,28 @@ Jangan memecah setiap `VStack` menjadi file baru. Buat file baru ketika sebuah b
 - memvalidasi input kosong;
 - memulai pekerjaan asynchronous;
 - mengubah state secara eksplisit; dan
-- mengubah error internal menjadi pesan aman untuk UI.
+- mengubah error internal menjadi failure yang aman untuk UI; serta
+- mengabaikan result lama jika input berubah ketika service masih berjalan.
 
 `@Observable` membuat perubahan properti dapat diamati SwiftUI. `@State` pada `AnalysisView` berarti View tersebut memiliki lifecycle ViewModel. `private(set)` pada `state` membolehkan View membaca state, tetapi hanya ViewModel yang boleh mengubahnya.
 
-Satu enum `State` mencegah kombinasi yang tidak masuk akal, misalnya loading dan success tampil bersamaan.
+Satu enum `State` mencegah kombinasi yang tidak masuk akal, misalnya loading dan success tampil bersamaan. Failure juga berupa enum agar ViewModel tidak menyebarkan string bebas ke seluruh aplikasi.
 
 ### Service
 
 `MLService` adalah protocol atau kontrak. ViewModel hanya tahu bahwa ia dapat mengirim `AnalysisRequest` dan menerima `AnalysisResult`; ViewModel tidak perlu tahu apakah implementasinya memakai perhitungan Swift, Core ML, atau test double.
 
-`MultinomialNaiveBayesService` adalah adapter yang memenuhi kontrak tersebut. Ia memiliki dataset kecil untuk belajar dan menyerahkan perhitungan ke `MultinomialNaiveBayesClassifier`. Classifier melakukan tokenisasi, menghitung frekuensi kata per kelas, menerapkan Laplace smoothing, lalu membandingkan log probability. Dataset kecilnya bukan data produksi, sehingga hasilnya tidak boleh dipakai sebagai nasihat keamanan.
+`MultinomialNaiveBayesService` adalah adapter yang memenuhi kontrak tersebut. Dataset kecilnya berada di `SpamTrainingDataset`, sedangkan perhitungan diserahkan ke `MultinomialNaiveBayesClassifier`. Dataset ini bukan data produksi, sehingga hasilnya tidak boleh dipakai sebagai nasihat keamanan.
+
+Bagian ML sengaja dipecah berdasarkan tahap perhitungan:
+
+- `TextTokenizer`: teks mentah menjadi token lowercase;
+- `TokenBag`: token menjadi sparse count seperti `["cash": 2]`;
+- `TrainingDataValidator`: memastikan smoothing valid dan kedua label tersedia;
+- `MultinomialNaiveBayesClassifier`: melatih statistik kelas dan menghitung log score; serta
+- `PredictionScores`: memilih label, mempertahankan aturan tie, dan menormalisasi confidence.
+
+Pemisahan ini bukan layer arsitektur baru. Setiap tipe hanya memberi nama pada satu langkah matematika yang sebelumnya tersembunyi di dalam classifier.
 
 `DemoMLService` tetap tersedia sebagai pembanding sederhana, tetapi tidak dipakai oleh aplikasi utama.
 
@@ -96,14 +112,41 @@ Satu enum `State` mencegah kombinasi yang tidak masuk akal, misalnya loading dan
 
 1. Pengguna memasukkan teks melalui binding `$viewModel.message` di `AnalysisView`.
 2. Tombol membuat `Task` dan memanggil `await viewModel.analyze()`.
-3. ViewModel membersihkan whitespace dan menolak input kosong.
+3. `AnalysisRequest(rawText:)` membersihkan whitespace dan menolak input kosong.
 4. ViewModel mengubah state menjadi `.loading`.
 5. ViewModel membuat `AnalysisRequest` dan memanggil `MLService`.
 6. Service meminta classifier menghitung probabilitas lalu mengembalikan `AnalysisResult` atau melempar error.
-7. ViewModel memilih `.success`, `.failure`, atau `.idle` jika task dibatalkan.
-8. SwiftUI membaca state baru dan memperbarui `AnalysisStatusView`.
+7. Sebelum menerbitkan success, ViewModel memastikan message masih sama dengan request yang selesai.
+8. ViewModel memilih `.success`, typed `.failure`, atau `.idle` jika task dibatalkan atau result sudah stale.
+9. SwiftUI membaca state baru dan memperbarui `AnalysisStatusView`.
 
 Gunakan breakpoint pada langkah 2, 4, 5, dan 7. Jalankan aplikasi dengan Command-R, lalu gunakan Step Over untuk melihat perpindahan tanggung jawab antarlayer.
+
+## Urutan reconstruction dari kosong
+
+Jangan mencoba mengingat seluruh project sebagai satu blok. Bangun kembali dependency chain berikut:
+
+1. `MessageLabel`, `AnalysisRequest`, dan `AnalysisResult`;
+2. `MLService` sebagai kontrak input-output;
+3. `AnalysisViewModel.State`, `message`, dan `analyze()`;
+4. `AnalysisView` yang mengirim action dan membaca state;
+5. `TextTokenizer` dan `TokenBag`;
+6. statistik training pada classifier;
+7. log scoring dan `PredictionScores`;
+8. `SpamTrainingDataset` dan concrete service; lalu
+9. dependency injection dari `Challenge6App`.
+
+Setelah setiap langkah, jawab empat pertanyaan: siapa yang memanggilnya, input-nya apa, output-nya apa, dan data pergi ke mana berikutnya.
+
+## Automated checks
+
+Jalankan:
+
+```bash
+./Scripts/run-classifier-checks.sh
+```
+
+Runner tersebut mengompilasi source nyata bersama test executable. Coverage saat ini melindungi tokenisasi, sparse counts, score selection, training validation, prediksi classifier, normalisasi request, serta transisi ViewModel untuk empty input, success, error, cancellation, dan stale result.
 
 ## Accessibility yang dapat dipelajari
 
@@ -129,10 +172,10 @@ Checklist manual di Simulator:
 
 Kerjakan satu latihan per commit agar penyebab setiap perubahan mudah dipahami.
 
-1. Ubah pesan validasi input kosong, lalu amati state `.failure`.
-2. Tambahkan batas minimal panjang teks di ViewModel, bukan di View.
-3. Buat `FailingMLService` khusus Preview untuk mempelajari error path.
-4. Tulis unit test untuk transisi `idle → loading → success` dan input kosong.
+1. Tambahkan test untuk pesan berisi token yang semuanya tidak dikenal, lalu jelaskan mengapa prior menentukan hasil.
+2. Tambahkan batas minimal panjang teks melalui `AnalysisRequest`, bukan di View.
+3. Buat service tertunda dan amati state `.loading` sebelum result dilepas.
+4. Ubah tie policy di `PredictionScores` hanya setelah menulis test untuk keputusan baru.
 5. Tambahkan tombol reset melalui method ViewModel, bukan dengan mengubah `state` dari View.
 6. Setelah alur saat ini dipahami, buat `CoreMLService` baru yang memenuhi protocol `MLService`, lalu ganti satu baris dependency di `Challenge6App`.
 
