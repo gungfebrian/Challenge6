@@ -3,7 +3,7 @@ import SwiftData
 
 @MainActor
 protocol AnalysisHistoryManaging: AnalysisHistorySaving {
-    func fetchAll() throws -> [AnalysisRecord]
+    func fetchAll() throws -> [AnalysisHistoryEntry]
     func delete(id: UUID) throws
     func clearAll() throws
 }
@@ -21,7 +21,7 @@ final class SwiftDataHistoryStore: AnalysisHistoryManaging {
     func save(_ entry: AnalysisHistoryEntry) throws {
         do {
             modelContext.insert(AnalysisRecord(entry: entry))
-            let records = try fetchAll()
+            let records = try fetchRecords()
             let entries = records.compactMap(\.historyEntry)
             let idsToRemove = Set(HistoryRetentionPolicy.recordIDsToRemove(from: entries))
 
@@ -36,7 +36,11 @@ final class SwiftDataHistoryStore: AnalysisHistoryManaging {
         }
     }
 
-    func fetchAll() throws -> [AnalysisRecord] {
+    func fetchAll() throws -> [AnalysisHistoryEntry] {
+        try fetchRecords().compactMap(\.historyEntry)
+    }
+
+    private func fetchRecords() throws -> [AnalysisRecord] {
         let descriptor = FetchDescriptor<AnalysisRecord>(
             sortBy: [
                 SortDescriptor(\.analyzedAt, order: .reverse),
@@ -48,7 +52,7 @@ final class SwiftDataHistoryStore: AnalysisHistoryManaging {
 
     func delete(id: UUID) throws {
         do {
-            for record in try fetchAll() where record.id == id {
+            for record in try fetchRecords() where record.id == id {
                 modelContext.delete(record)
             }
             try modelContext.save()

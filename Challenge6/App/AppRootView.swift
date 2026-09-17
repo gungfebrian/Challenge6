@@ -21,7 +21,10 @@ struct AppRootView: View {
             }
 
             NavigationStack {
-                HistoryPlaceholderView(isUnavailable: historyInitializationError)
+                HistoryView(
+                    store: historyStore,
+                    isPersistenceUnavailable: historyInitializationError
+                )
             }
             .tabItem {
                 Label("History", systemImage: "clock")
@@ -34,23 +37,6 @@ struct AppRootView: View {
                 Label("Settings", systemImage: "gearshape")
             }
         }
-    }
-}
-
-private struct HistoryPlaceholderView: View {
-    let isUnavailable: Bool
-
-    var body: some View {
-        ContentUnavailableView(
-            isUnavailable ? "History Unavailable" : "No Analysis History",
-            systemImage: isUnavailable ? "exclamationmark.triangle" : "clock",
-            description: Text(
-                isUnavailable
-                    ? "Local history could not be opened. Message analysis is still available."
-                    : "Successfully analyzed messages can appear here."
-            )
-        )
-        .navigationTitle("History")
     }
 }
 
