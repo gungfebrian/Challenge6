@@ -80,6 +80,12 @@ final class AnalysisViewModel {
         state == .loading
     }
 
+    func reset() {
+        message = ""
+        state = .idle
+        persistenceWarning = nil
+    }
+
     func analyze() async {
         guard !isAnalyzing else { return }
 
