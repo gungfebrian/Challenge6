@@ -1,0 +1,232 @@
+{
+  "algorithm" : "Core ML Maximum Entropy Text Classifier (revision 1)",
+  "createdAt" : "2026-09-17T12:23:54Z",
+  "datasetID" : "uci-sms-spam-collection-v1",
+  "demoPredictions" : [
+    {
+      "confidence" : 0.9514722223202731,
+      "name" : "Suspicious",
+      "predicted" : "suspicious",
+      "text" : "URGENT! Your mobile number has won a $5,000 cash prize. Click now to verify and claim your reward."
+    },
+    {
+      "confidence" : 0.9999438466053694,
+      "name" : "Legitimate",
+      "predicted" : "legitimate",
+      "text" : "Hi Maya, our project meeting is at 10:30 tomorrow in the library. Please bring the latest notes."
+    },
+    {
+      "confidence" : 0.5047365569554146,
+      "name" : "Ambiguous",
+      "predicted" : "legitimate",
+      "text" : "Urgent: verify the delivery link at portal.example/check."
+    }
+  ],
+  "duplicateSummary" : {
+    "duplicateGroupCount" : 316,
+    "duplicateSampleCount" : 782
+  },
+  "errorReviews" : [
+    {
+      "category" : "Identifier or transaction pattern",
+      "confidence" : 0.7124366343724051,
+      "expected" : "suspicious",
+      "predicted" : "legitimate",
+      "sampleID" : "0adb79b92a392a3b2be8b9366e19a9838edf603f23ed79e962cd0e9c800d2b27"
+    },
+    {
+      "category" : "Limited message context",
+      "confidence" : 0.7517411635255811,
+      "expected" : "legitimate",
+      "predicted" : "suspicious",
+      "sampleID" : "0f6675f4f5a36e09e742696db1e961c92d2ecfdba82e82d9abaef390c2fa6d5b"
+    },
+    {
+      "category" : "Suspicious pattern underweighted",
+      "confidence" : 0.6668173621294059,
+      "expected" : "suspicious",
+      "predicted" : "legitimate",
+      "sampleID" : "213f12c2660962d664f1225fc699b5fe4ce363c48ed27c636df218c32727fcd8"
+    },
+    {
+      "category" : "Suspicious pattern underweighted",
+      "confidence" : 0.999951702463412,
+      "expected" : "suspicious",
+      "predicted" : "legitimate",
+      "sampleID" : "2428a0aabed972c77efa0920aa6825f0ad573db98ed1d37f78b2450109371768"
+    },
+    {
+      "category" : "Identifier or transaction pattern",
+      "confidence" : 0.8433737496594773,
+      "expected" : "legitimate",
+      "predicted" : "suspicious",
+      "sampleID" : "4b10fa91c9b64ee88302b883281a901d0c996a6ff36a7b5c9ad976083f31800f"
+    },
+    {
+      "category" : "Identifier or transaction pattern",
+      "confidence" : 0.9735212635059587,
+      "expected" : "legitimate",
+      "predicted" : "suspicious",
+      "sampleID" : "67c94c5503c0b309d205a1a0b2a7073f9169503509a615d5aa0f49f6cf524049"
+    },
+    {
+      "category" : "Limited message context",
+      "confidence" : 0.9445619072773923,
+      "expected" : "legitimate",
+      "predicted" : "suspicious",
+      "sampleID" : "7081a21ab1c0972de24f8fcbc2605ff3a58f1a8a2599897969318d59356ee373"
+    },
+    {
+      "category" : "Suspicious pattern underweighted",
+      "confidence" : 0.9999951673855034,
+      "expected" : "suspicious",
+      "predicted" : "legitimate",
+      "sampleID" : "70fd69899e09c2e43cbef3994a9a88fa1912f90266de224120170d8e210bf0bb"
+    },
+    {
+      "category" : "Suspicious pattern underweighted",
+      "confidence" : 0.9992451459035726,
+      "expected" : "suspicious",
+      "predicted" : "legitimate",
+      "sampleID" : "7dbcb4dda5395f5ca15502def15f28e12149449b581da105decd8d602e2fc6c6"
+    },
+    {
+      "category" : "Suspicious pattern underweighted",
+      "confidence" : 0.9999975189291598,
+      "expected" : "suspicious",
+      "predicted" : "legitimate",
+      "sampleID" : "8894cca4613733e5255f76316375abe879927bb4c18a426577aae894725607af"
+    }
+  ],
+  "evaluations" : [
+    {
+      "metrics" : {
+        "accuracy" : 0.8670658682634731,
+        "confusionMatrix" : {
+          "falseNegative" : 111,
+          "falsePositive" : 0,
+          "trueNegative" : 724,
+          "truePositive" : 0
+        },
+        "sampleCount" : 835,
+        "suspiciousF1" : 0,
+        "suspiciousPrecision" : 0,
+        "suspiciousRecall" : 0
+      },
+      "name" : "Majority holdout"
+    },
+    {
+      "metrics" : {
+        "accuracy" : 0.9808612440191388,
+        "confusionMatrix" : {
+          "falseNegative" : 13,
+          "falsePositive" : 3,
+          "trueNegative" : 721,
+          "truePositive" : 99
+        },
+        "sampleCount" : 836,
+        "suspiciousF1" : 0.9252336448598131,
+        "suspiciousPrecision" : 0.9705882352941176,
+        "suspiciousRecall" : 0.8839285714285714
+      },
+      "name" : "Naive Bayes validation"
+    },
+    {
+      "metrics" : {
+        "accuracy" : 0.9904191616766467,
+        "confusionMatrix" : {
+          "falseNegative" : 7,
+          "falsePositive" : 1,
+          "trueNegative" : 723,
+          "truePositive" : 104
+        },
+        "sampleCount" : 835,
+        "suspiciousF1" : 0.962962962962963,
+        "suspiciousPrecision" : 0.9904761904761905,
+        "suspiciousRecall" : 0.9369369369369369
+      },
+      "name" : "Naive Bayes holdout"
+    },
+    {
+      "metrics" : {
+        "accuracy" : 1,
+        "confusionMatrix" : {
+          "falseNegative" : 0,
+          "falsePositive" : 0,
+          "trueNegative" : 3379,
+          "truePositive" : 524
+        },
+        "sampleCount" : 3903,
+        "suspiciousF1" : 1,
+        "suspiciousPrecision" : 1,
+        "suspiciousRecall" : 1
+      },
+      "name" : "MaxEnt training"
+    },
+    {
+      "metrics" : {
+        "accuracy" : 0.9688995215311005,
+        "confusionMatrix" : {
+          "falseNegative" : 20,
+          "falsePositive" : 6,
+          "trueNegative" : 718,
+          "truePositive" : 92
+        },
+        "sampleCount" : 836,
+        "suspiciousF1" : 0.8761904761904763,
+        "suspiciousPrecision" : 0.9387755102040817,
+        "suspiciousRecall" : 0.8214285714285714
+      },
+      "name" : "MaxEnt validation"
+    },
+    {
+      "metrics" : {
+        "accuracy" : 0.9772455089820359,
+        "confusionMatrix" : {
+          "falseNegative" : 13,
+          "falsePositive" : 6,
+          "trueNegative" : 718,
+          "truePositive" : 98
+        },
+        "sampleCount" : 835,
+        "suspiciousF1" : 0.9116279069767441,
+        "suspiciousPrecision" : 0.9423076923076923,
+        "suspiciousRecall" : 0.8828828828828829
+      },
+      "name" : "MaxEnt holdout"
+    }
+  ],
+  "experimentID" : "maxent-v1",
+  "language" : "English",
+  "latencyMilliseconds" : 0.028792,
+  "modelIdentifier" : "SpamClassifierMaxEnt",
+  "modelSizeBytes" : 143456,
+  "modelVersion" : "1.0.0",
+  "sourceSHA256" : "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+  "splitSeed" : 20260917,
+  "splitSummaries" : [
+    {
+      "groups" : 3586,
+      "legitimate" : 3379,
+      "name" : "training",
+      "suspicious" : 524,
+      "total" : 3903
+    },
+    {
+      "groups" : 776,
+      "legitimate" : 724,
+      "name" : "validation",
+      "suspicious" : 112,
+      "total" : 836
+    },
+    {
+      "groups" : 746,
+      "legitimate" : 724,
+      "name" : "holdout",
+      "suspicious" : 111,
+      "total" : 835
+    }
+  ],
+  "totalSamples" : 5574,
+  "trainingDurationSeconds" : 0.364475125
+}
