@@ -31,22 +31,11 @@ struct AppRootView: View {
             }
 
             NavigationStack {
-                SettingsPlaceholderView()
+                SettingsView(historyStore: historyStore)
             }
             .tabItem {
                 Label("Settings", systemImage: "gearshape")
             }
         }
-    }
-}
-
-private struct SettingsPlaceholderView: View {
-    var body: some View {
-        Form {
-            Section("Privacy") {
-                Text("Messages are analyzed on this device.")
-            }
-        }
-        .navigationTitle("Settings")
     }
 }
