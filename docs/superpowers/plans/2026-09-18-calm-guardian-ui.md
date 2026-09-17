@@ -31,13 +31,13 @@
 - [x] Generate and inspect idle, checking, safe, and warning mascot PNGs with transparent backgrounds.
 - [x] Generate and inspect standard, dark, and tinted opaque 1024-pixel app icons.
 - [x] Add image sets and validate size/alpha with `sips`.
-- [ ] Commit as `design: add the guardian mascot and app icon`.
+- [x] Commit as `design: add the guardian mascot and app icon`.
 
 ### Task 3: Add visual primitives
 
-- [ ] Add semantic theme, sky background, app card, primary button style, and animated mascot view.
-- [ ] Add 12-point spacing and previews for both appearances and large text.
-- [ ] Build the simulator target.
+- [x] Add semantic theme, sky background, app card, primary button style, and animated mascot view.
+- [x] Add 12-point spacing and previews for both appearances and large text.
+- [x] Build the simulator target.
 - [ ] Commit as `design: add calm guardian visual primitives`.
 
 ### Task 4: Rebuild the Check experience
