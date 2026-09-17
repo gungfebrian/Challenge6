@@ -8,6 +8,7 @@ enum Challenge6CoreTests {
         AnalysisRequestTests.run()
         CoreMLPredictionMapperTests.run()
         await MultinomialNaiveBayesClassifierTests.run()
+        await CoreMLServiceContractTests.run()
         await AnalysisViewModelTests.run()
 
         print("Challenge6 checks passed")

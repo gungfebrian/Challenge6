@@ -12,6 +12,8 @@ swiftc \
     "$repository_directory/Challenge6/Features/Analysis/Models/ModelMetadata.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MLService.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/CoreMLPredictionMapper.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/Services/MLServiceError.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/Services/CoreMLTextClassifierService.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/TextTokenizer.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/TokenBag.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/PredictionScores.swift" \
@@ -27,6 +29,7 @@ swiftc \
     "$repository_directory/Tests/Challenge6CoreTests/TrainingDataValidatorTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/AnalysisRequestTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/CoreMLPredictionMapperTests.swift" \
+    "$repository_directory/Tests/Challenge6CoreTests/CoreMLServiceContractTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/MultinomialNaiveBayesClassifierTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/AnalysisViewModelTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestMain.swift" \
