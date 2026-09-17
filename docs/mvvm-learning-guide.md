@@ -1,5 +1,7 @@
 # Panduan Belajar MVVM dan Struktur File
 
+> Catatan 17 September 2026: dokumen ini mempertahankan penjelasan awal tentang baseline Naive Bayes. Aplikasi produksi kini memakai `CoreMLTextClassifierService`; lihat `academy-demo-guide.md` untuk arsitektur, data, dan alur demo terkini. Baseline tetap ada untuk pembelajaran dan pengujian, bukan sebagai fallback tersembunyi.
+
 ## Jawaban singkat
 
 Struktur proyek ini sudah baik untuk belajar MVVM karena kode dikelompokkan berdasarkan fitur, lalu berdasarkan tanggung jawab di dalam fitur tersebut. Struktur ini cukup jelas untuk pemula tanpa menambahkan layer yang belum dibutuhkan.
@@ -46,8 +48,8 @@ AnalysisView
 AnalysisViewModel
       ↓ membuat AnalysisRequest
 MLService
-      ↓ MultinomialNaiveBayesService
-MultinomialNaiveBayesClassifier
+      ↓ CoreMLTextClassifierService (aplikasi)
+NLModel + Core ML MaxEnt
       ↓ mengembalikan AnalysisResult
 AnalysisViewModel.State
       ↓ dibaca oleh View
@@ -90,7 +92,7 @@ Satu enum `State` mencegah kombinasi yang tidak masuk akal, misalnya loading dan
 
 `MLService` adalah protocol atau kontrak. ViewModel hanya tahu bahwa ia dapat mengirim `AnalysisRequest` dan menerima `AnalysisResult`; ViewModel tidak perlu tahu apakah implementasinya memakai perhitungan Swift, Core ML, atau test double.
 
-`MultinomialNaiveBayesService` adalah adapter yang memenuhi kontrak tersebut. Dataset kecilnya berada di `SpamTrainingDataset`, sedangkan perhitungan diserahkan ke `MultinomialNaiveBayesClassifier`. Dataset ini bukan data produksi, sehingga hasilnya tidak boleh dipakai sebagai nasihat keamanan.
+`CoreMLTextClassifierService` adalah adapter produksi yang memenuhi kontrak tersebut. Ia membungkus `NLModel` di dalam actor dan memakai model MaxEnt yang dibundel. `MultinomialNaiveBayesService` tetap memenuhi kontrak yang sama sebagai baseline transparan untuk belajar dan focused test; dataset kecilnya berada di `SpamTrainingDataset`, sedangkan perhitungan diserahkan ke `MultinomialNaiveBayesClassifier`. Baseline ini bukan fallback aplikasi dan hasil aplikasi tetap tidak boleh dipakai sebagai nasihat keamanan.
 
 Bagian ML sengaja dipecah berdasarkan tahap perhitungan:
 
@@ -106,7 +108,7 @@ Pemisahan ini bukan layer arsitektur baru. Setiap tipe hanya memberi nama pada s
 
 ### App
 
-`Challenge6App` adalah composition root: tempat objek konkret dipilih dan disambungkan. Di sinilah `MultinomialNaiveBayesService` diberikan kepada `AnalysisView`. Ketika model Core ML tersedia, penggantian implementasi dimulai dari titik ini.
+`Challenge6App` adalah composition root: tempat objek konkret dipilih dan disambungkan. Di sinilah `CoreMLTextClassifierService` serta penyimpanan SwiftData lokal diberikan kepada tiga-tab app shell. Jika model Core ML tidak tersedia, aplikasi menampilkan typed error dan tidak diam-diam menggantinya dengan Naive Bayes.
 
 ## Ikuti satu interaksi di kode
 

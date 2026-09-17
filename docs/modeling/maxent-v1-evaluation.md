@@ -12,6 +12,7 @@
 - Language: English
 - Training duration: 0.364 seconds
 - Model size: 143456 bytes
+- Model SHA-256: `e606d7910ffa8ff4decd523407a6c13e8f10f8bda0c2ea35ba97c00a73685b67`
 - Median local inference latency: 0.029 ms
 
 ## Dataset and frozen split

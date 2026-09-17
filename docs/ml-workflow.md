@@ -1,6 +1,8 @@
-# Industry ML Workflow
+# Challenge6 ML Workflow
 
 This workflow keeps product decisions, model experiments, and iOS integration traceable. A later stage may reveal a problem in an earlier stage; returning to fix it is expected.
+
+Challenge6 completed this workflow for `maxent-v1`. The runnable native pipeline lives in `Scripts/Training`, the immutable aggregate record is `docs/modeling/experiments/maxent-v1.json`, and the full results are in `docs/modeling/maxent-v1-evaluation.md`.
 
 ```text
 Problem -> Metric -> Data -> Baseline -> Training -> Validation -> Testing
@@ -34,3 +36,13 @@ Do not train until the label meaning and split policy are written down. Do not i
 - What information belongs to validation but not test-driven tuning?
 - Where should text preprocessing live so training and inference remain consistent?
 - Which evidence proves that conversion did not change model behavior?
+
+## Reproducing the frozen run
+
+1. Acquire and verify the official UCI archive using `docs/data/uci-sms-spam-collection.md`.
+2. Run the preparation and metric contract checks with `./Scripts/run-training-checks.sh`.
+3. Run `./Scripts/train-spam-classifier.sh` on macOS with `DEVELOPER_DIR` pointing to Xcode.
+4. Review ignored output under `Scripts/Training/Output/maxent-v1`, including malformed-row diagnostics, duplicate groups, split overlap checks, local error details, and demo predictions.
+5. Compare the generated report and JSON with the committed release. Do not replace the bundled model until a new experiment and version are intentionally approved.
+
+The fixed seed makes grouping and split assignment reproducible. Create ML optimizer output can still vary across framework or OS versions, so every exported artifact keeps its own actual metrics, size, latency, and metadata.

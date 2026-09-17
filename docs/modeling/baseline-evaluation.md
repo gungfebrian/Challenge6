@@ -45,6 +45,16 @@ Record one row per completed experiment using the same validation split.
 |---|---|---:|---:|---:|---:|---:|---:|---|
 | Majority baseline | Most frequent training label | Measured during the run | Measured during the run | Measured during the run | Measured during the run | Not applicable | Not applicable | Reference only |
 
+The frozen `maxent-v1` experiment produced this holdout comparison:
+
+| Model | Precision | Recall | F1 | Accuracy | Decision |
+|---|---:|---:|---:|---:|---|
+| Majority class | 0.00% | 0.00% | 0.00% | 86.71% | Imbalance reference |
+| Hand-written Multinomial Naive Bayes | 99.05% | 93.69% | 96.30% | 99.04% | Transparent learning baseline retained |
+| Core ML MaxEnt 1.0.0 | 94.23% | 88.29% | 91.16% | 97.72% | Default app model for native Create ML/Core ML demonstration |
+
+The measured evidence does not support claiming MaxEnt outperformed Naive Bayes. Its selection is an integration and learning decision. See `maxent-v1-evaluation.md` for confusion matrices, validation results, model size, latency, and reviewed holdout errors.
+
 ## Error Analysis
 
 Review at least ten wrong validation predictions before changing the model. Include both false positives and false negatives. For each, record the expected label, predicted label, confidence if available, likely error category, and one evidence-based next experiment.
