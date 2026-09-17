@@ -18,3 +18,12 @@ func expectThrows<T>(
         expect(validate(error), "Unexpected error for \(message): \(error)")
     }
 }
+
+func expectApproximatelyEqual(
+    _ actual: Double,
+    _ expected: Double,
+    _ message: String,
+    tolerance: Double = 0.000_001
+) {
+    expect(abs(actual - expected) < tolerance, message)
+}
