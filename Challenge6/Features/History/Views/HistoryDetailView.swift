@@ -12,14 +12,14 @@ struct HistoryDetailView: View {
     }
 
     private var tint: Color {
-        entry.label == .suspicious ? .orange : .green
+        entry.label == .suspicious ? AppTheme.warning : AppTheme.safe
     }
 
     var body: some View {
         Form {
             Section("Result") {
                 Label(title, systemImage: icon)
-                    .font(.headline)
+                    .font(.system(.headline, design: .rounded, weight: .bold))
                     .foregroundStyle(tint)
                 LabeledContent("Confidence") {
                     Text(entry.confidence, format: .percent.precision(.fractionLength(0)))
@@ -43,9 +43,12 @@ struct HistoryDetailView: View {
 
             Section("Remember") {
                 Text("Confidence is a model score, not certainty. This learning-first demo is not professional safety advice. Independently verify suspicious or unexpected messages.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.secondaryText)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.background)
+        .tint(AppTheme.primary)
         .frame(maxWidth: AppSpacing.readableContentWidth)
         .frame(maxWidth: .infinity)
         .navigationTitle("Analysis Details")

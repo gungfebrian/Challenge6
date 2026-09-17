@@ -37,5 +37,6 @@ struct AppRootView: View {
                 Label("Settings", systemImage: "gearshape")
             }
         }
+        .tint(AppTheme.primary)
     }
 }

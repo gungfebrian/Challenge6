@@ -56,9 +56,12 @@ struct SettingsView: View {
             Section("About") {
                 LabeledContent("Purpose", value: "Educational demo")
                 Text("This learning-first classifier does not represent every modern scam, guarantee safety, or replace your judgment and official reporting channels.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.secondaryText)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.background)
+        .tint(AppTheme.primary)
         .frame(maxWidth: AppSpacing.readableContentWidth)
         .frame(maxWidth: .infinity)
         .navigationTitle("Settings")

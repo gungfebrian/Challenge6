@@ -25,7 +25,7 @@ struct ModelInformationView: View {
                 LabeledContent("License", value: "CC BY 4.0")
                 Text("Almeida, T. & Hidalgo, J. (2011). SMS Spam Collection. DOI: 10.24432/C5CC84.")
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppTheme.secondaryText)
             }
 
             Section("Privacy") {
@@ -42,6 +42,9 @@ struct ModelInformationView: View {
                 Text("The hand-written Multinomial Naive Bayes classifier remains in the project as an inspectable learning baseline for tokenization, word counts, priors, smoothing, and log-probability scoring. It is not a silent runtime fallback.")
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.background)
+        .tint(AppTheme.primary)
         .frame(maxWidth: AppSpacing.readableContentWidth)
         .frame(maxWidth: .infinity)
         .navigationTitle("Model Information")

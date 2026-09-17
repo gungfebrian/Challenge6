@@ -46,13 +46,13 @@
 - [x] Add the single example, help, and result sheet coordinator.
 - [x] Preserve cancellation, stale-result checks, persistence warnings, haptics, announcements, focus, and error recovery.
 - [x] Add idle/loading/result/failure previews and verify the focused checks/build.
-- [ ] Commit as `feat: focus the spam check experience`.
+- [x] Commit as `feat: focus the spam check experience`.
 
 ### Task 5: Align History, Settings, and navigation
 
-- [ ] Preserve all native navigation, list, form, deletion, and settings behavior.
-- [ ] Apply semantic backgrounds, surfaces, typography, and tint.
-- [ ] Use the mascot only for the History empty state.
+- [x] Preserve all native navigation, list, form, deletion, and settings behavior.
+- [x] Apply semantic backgrounds, surfaces, typography, and tint.
+- [x] Use the mascot only for the History empty state.
 - [ ] Commit as `design: align history and settings with the guardian theme`.
 
 ### Task 6: Verify the demo

@@ -24,6 +24,7 @@ struct HistoryView: View {
                 historyList
             }
         }
+        .background(AppTheme.background)
         .navigationTitle("History")
         .toolbar {
             if !entries.isEmpty {
@@ -66,11 +67,26 @@ struct HistoryView: View {
     }
 
     private var emptyState: some View {
-        ContentUnavailableView(
-            "No Analysis History",
-            systemImage: "clock",
-            description: Text("Successful checks appear here when Save Analysis History is enabled.")
-        )
+        ScrollView {
+            VStack(spacing: AppSpacing.medium) {
+                GuardianMascotView(mood: .idle, size: 156)
+                    .accessibilityHidden(true)
+
+                Text("No checks yet")
+                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+
+                Text("Successful checks appear here when Save Analysis History is enabled.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(AppTheme.secondaryText)
+                    .frame(maxWidth: 340)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, AppSpacing.large)
+            .padding(.top, AppSpacing.extraLarge * 2)
+        }
+        .background(AppTheme.background)
+        .accessibilityElement(children: .combine)
     }
 
     private var historyList: some View {
@@ -78,8 +94,9 @@ struct HistoryView: View {
             if let errorMessage {
                 Section {
                     Label(errorMessage, systemImage: "exclamationmark.triangle")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(AppTheme.warning)
                         .accessibilityLabel("History warning. \(errorMessage)")
+                        .listRowBackground(AppTheme.warningSurface)
                 }
             }
 
@@ -91,12 +108,15 @@ struct HistoryView: View {
                         HistoryRow(entry: entry)
                     }
                     .accessibilityHint("Opens the complete saved analysis.")
+                    .listRowBackground(AppTheme.surface)
                 }
                 .onDelete(perform: delete)
             } footer: {
                 Text("Saved only on this device. At most 50 completed analyses are retained.")
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.background)
         .frame(maxWidth: AppSpacing.readableContentWidth)
         .frame(maxWidth: .infinity)
     }
@@ -147,7 +167,7 @@ private struct HistoryRow: View {
     }
 
     private var tint: Color {
-        entry.label == .suspicious ? .orange : .green
+        entry.label == .suspicious ? AppTheme.warning : AppTheme.safe
     }
 
     var body: some View {
@@ -161,6 +181,7 @@ private struct HistoryRow: View {
             VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
                 Text(entry.message)
                     .font(.body)
+                    .foregroundStyle(AppTheme.ink)
                     .lineLimit(2)
 
                 VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
@@ -171,7 +192,7 @@ private struct HistoryRow: View {
                     Text(entry.analyzedAt, format: .relative(presentation: .named))
                 }
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppTheme.secondaryText)
             }
         }
         .padding(.vertical, AppSpacing.extraSmall)
