@@ -22,6 +22,10 @@ struct DemoMLService: MLService {
             ? min(0.55 + (Double(matchCount) * 0.1), 0.95)
             : 0.65
 
-        return AnalysisResult(label: label, confidence: confidence)
+        return AnalysisResult(
+            label: label,
+            confidence: confidence,
+            model: .deterministicDemo
+        )
     }
 }

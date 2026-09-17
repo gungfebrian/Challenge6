@@ -12,7 +12,16 @@ enum MessageLabel: String, Equatable, Sendable {
 /// A classifier prediction expressed in domain terms the UI can render.
 struct AnalysisResult: Equatable, Sendable {
     let label: MessageLabel
-
-    // Expected range: 0...1. The future ML service owns validation and mapping.
     let confidence: Double
+    let model: ModelMetadata
+
+    init(
+        label: MessageLabel,
+        confidence: Double,
+        model: ModelMetadata = .educationalNaiveBayes
+    ) {
+        self.label = label
+        self.confidence = confidence
+        self.model = model
+    }
 }

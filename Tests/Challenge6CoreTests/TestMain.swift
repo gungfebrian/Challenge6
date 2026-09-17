@@ -6,6 +6,7 @@ enum Challenge6CoreTests {
         PredictionScoresTests.run()
         TrainingDataValidatorTests.run()
         AnalysisRequestTests.run()
+        CoreMLPredictionMapperTests.run()
         await MultinomialNaiveBayesClassifierTests.run()
         await AnalysisViewModelTests.run()
 

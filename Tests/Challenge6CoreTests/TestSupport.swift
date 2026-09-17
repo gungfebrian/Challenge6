@@ -15,3 +15,16 @@ func expectApproximatelyEqual(
 ) {
     expect(abs(actual - expected) < tolerance, message)
 }
+
+func expectThrows<T>(
+    _ message: String,
+    operation: () throws -> T,
+    validate: (Error) -> Bool
+) {
+    do {
+        _ = try operation()
+        fatalError(message)
+    } catch {
+        expect(validate(error), "Unexpected error for \(message): \(error)")
+    }
+}

@@ -9,7 +9,9 @@ test_binary="${TMPDIR:-/tmp}/challenge6-core-tests"
 swiftc \
     "$repository_directory/Challenge6/Features/Analysis/Models/AnalysisRequest.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Models/AnalysisResult.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/Models/ModelMetadata.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MLService.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/Services/CoreMLPredictionMapper.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/TextTokenizer.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/TokenBag.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/PredictionScores.swift" \
@@ -24,6 +26,7 @@ swiftc \
     "$repository_directory/Tests/Challenge6CoreTests/PredictionScoresTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TrainingDataValidatorTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/AnalysisRequestTests.swift" \
+    "$repository_directory/Tests/Challenge6CoreTests/CoreMLPredictionMapperTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/MultinomialNaiveBayesClassifierTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/AnalysisViewModelTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestMain.swift" \
