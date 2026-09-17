@@ -23,14 +23,14 @@
 ### Task 1: Record the approved design
 
 - [x] Create the design spec and this tracked plan.
-- [ ] Run `git diff --check`.
-- [ ] Commit as `docs: define the calm guardian UI redesign`.
+- [x] Run `git diff --check`.
+- [x] Commit as `docs: define the calm guardian UI redesign`.
 
 ### Task 2: Generate mascot and icon assets
 
-- [ ] Generate and inspect idle, checking, safe, and warning mascot PNGs with transparent backgrounds.
-- [ ] Generate and inspect standard, dark, and tinted opaque 1024-pixel app icons.
-- [ ] Add image sets and validate size/alpha with `sips`.
+- [x] Generate and inspect idle, checking, safe, and warning mascot PNGs with transparent backgrounds.
+- [x] Generate and inspect standard, dark, and tinted opaque 1024-pixel app icons.
+- [x] Add image sets and validate size/alpha with `sips`.
 - [ ] Commit as `design: add the guardian mascot and app icon`.
 
 ### Task 3: Add visual primitives
@@ -62,4 +62,3 @@
 - [ ] Capture light/dark screenshots and inspect small/large phones, iPad, landscape, keyboard, large text, VoiceOver order, and Reduce Motion.
 - [ ] Run `git diff --check` and review repository status.
 - [ ] Commit as `docs: refresh the calm guardian demo walkthrough`.
-
