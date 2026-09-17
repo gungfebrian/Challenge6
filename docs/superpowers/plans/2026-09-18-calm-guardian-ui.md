@@ -38,14 +38,14 @@
 - [x] Add semantic theme, sky background, app card, primary button style, and animated mascot view.
 - [x] Add 12-point spacing and previews for both appearances and large text.
 - [x] Build the simulator target.
-- [ ] Commit as `design: add calm guardian visual primitives`.
+- [x] Commit as `design: add calm guardian visual primitives`.
 
 ### Task 4: Rebuild the Check experience
 
-- [ ] Replace the grouped form with the three-zone layout.
-- [ ] Add the single example, help, and result sheet coordinator.
-- [ ] Preserve cancellation, stale-result checks, persistence warnings, haptics, announcements, focus, and error recovery.
-- [ ] Add idle/loading/result/failure previews and verify the focused checks/build.
+- [x] Replace the grouped form with the three-zone layout.
+- [x] Add the single example, help, and result sheet coordinator.
+- [x] Preserve cancellation, stale-result checks, persistence warnings, haptics, announcements, focus, and error recovery.
+- [x] Add idle/loading/result/failure previews and verify the focused checks/build.
 - [ ] Commit as `feat: focus the spam check experience`.
 
 ### Task 5: Align History, Settings, and navigation

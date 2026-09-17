@@ -4,39 +4,74 @@ import SwiftUI
 struct AnalysisView: View {
     @State private var viewModel: AnalysisViewModel
     @State private var analysisTask: Task<Void, Never>?
+    @State private var didStartPreviewAnalysis = false
+    @State private var activeSheet: ActiveCheckSheet?
+    @State private var shouldFocusEditorAfterSheet = false
     @State private var successFeedbackTrigger = 0
     @State private var warningFeedbackTrigger = 0
     @State private var errorFeedbackTrigger = 0
     @FocusState private var isEditorFocused: Bool
     @AppStorage(PreferenceKeys.hapticFeedback) private var hapticFeedback = true
+    private let startsAnalysisOnAppear: Bool
 
     init(
         mlService: any MLService,
         historySaver: (any AnalysisHistorySaving)? = nil,
-        isHistorySavingEnabled: @escaping () -> Bool = { true }
+        isHistorySavingEnabled: @escaping () -> Bool = { true },
+        initialMessage: String = "",
+        startsAnalysisOnAppear: Bool = false
     ) {
-        _viewModel = State(
-            initialValue: AnalysisViewModel(
-                mlService: mlService,
-                historySaver: historySaver,
-                isHistorySavingEnabled: isHistorySavingEnabled
-            )
+        let model = AnalysisViewModel(
+            mlService: mlService,
+            historySaver: historySaver,
+            isHistorySavingEnabled: isHistorySavingEnabled
         )
+        model.message = initialMessage
+        _viewModel = State(initialValue: model)
+        self.startsAnalysisOnAppear = startsAnalysisOnAppear
     }
 
     var body: some View {
-        Form {
-            introSection
-            examplesSection
-            editorSection
-            analyzeSection
-            statusSection
+        ZStack {
+            SkyBackdrop()
+
+            ScrollView {
+                VStack(spacing: AppSpacing.large) {
+                    identitySection
+                    messageCard
+                    AnalysisStatusView(state: viewModel.state, retry: startAnalysis)
+                }
+                .frame(maxWidth: AppTheme.compactContentWidth)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, AppSpacing.medium)
+                .padding(.top, AppSpacing.small)
+                .padding(.bottom, AppSpacing.extraLarge)
+            }
+            .scrollDismissesKeyboard(.interactively)
         }
-        .formStyle(.grouped)
-        .scrollDismissesKeyboard(.interactively)
-        .frame(maxWidth: AppSpacing.readableContentWidth)
-        .frame(maxWidth: .infinity)
-        .navigationTitle("Spam Check")
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            checkButton
+                .padding(.horizontal, AppSpacing.medium)
+                .padding(.top, AppSpacing.small)
+                .padding(.bottom, AppSpacing.extraSmall)
+                .background(
+                    LinearGradient(
+                        colors: [AppTheme.background.opacity(0), AppTheme.background],
+                        startPoint: .top,
+                        endPoint: .center
+                    )
+                )
+        }
+        .toolbar(.hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { isEditorFocused = false }
+            }
+        }
+        .sheet(item: $activeSheet, onDismiss: handleSheetDismissal) { sheet in
+            sheetContent(for: sheet)
+        }
         .sensoryFeedback(.success, trigger: successFeedbackTrigger)
         .sensoryFeedback(.warning, trigger: warningFeedbackTrigger)
         .sensoryFeedback(.error, trigger: errorFeedbackTrigger)
@@ -48,140 +83,197 @@ struct AnalysisView: View {
         .onDisappear {
             analysisTask?.cancel()
         }
-    }
-
-    private var introSection: some View {
-        Section {
-            VStack(alignment: .leading, spacing: AppSpacing.small) {
-                Label("Private, on-device analysis", systemImage: "iphone.and.arrow.forward.inward")
-                    .font(.headline)
-
-                Text("Check an English message with a learning-first Core ML model. Your message is not sent to a server.")
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.vertical, AppSpacing.extraSmall)
-            .accessibilityElement(children: .combine)
+        .task {
+            guard startsAnalysisOnAppear, !didStartPreviewAnalysis else { return }
+            didStartPreviewAnalysis = true
+            startAnalysis()
         }
     }
 
-    private var examplesSection: some View {
-        Section {
-            ForEach(DemoExample.all) { example in
+    private var identitySection: some View {
+        VStack(spacing: AppSpacing.small) {
+            HStack(alignment: .top, spacing: AppSpacing.small) {
+                VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
+                    Text("Spam Check")
+                        .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                        .foregroundStyle(AppTheme.ink)
+
+                    Text("Check a message before you trust it.")
+                        .font(.body)
+                        .foregroundStyle(AppTheme.secondaryText)
+                }
+
+                Spacer(minLength: AppSpacing.small)
+
                 Button {
-                    viewModel.message = example.message
-                    isEditorFocused = true
+                    isEditorFocused = false
+                    activeSheet = .help
                 } label: {
-                    HStack(spacing: AppSpacing.medium) {
-                        Image(systemName: example.systemImage)
-                            .frame(width: AppSpacing.large)
-
-                        VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
-                            Text(example.kind.rawValue)
-                                .font(.headline)
-                            Text(example.message)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(2)
-                        }
-
-                        Spacer(minLength: 0)
-                        Image(systemName: "arrow.down.to.line.compact")
-                            .foregroundStyle(.secondary)
-                    }
-                    .contentShape(.rect)
-                    .frame(minHeight: AppSpacing.minimumTouchTarget)
+                    Image(systemName: "questionmark")
+                        .font(.headline.weight(.bold))
+                        .foregroundStyle(AppTheme.ink)
+                        .frame(width: AppSpacing.minimumTouchTarget, height: AppSpacing.minimumTouchTarget)
+                        .background(AppTheme.surface.opacity(0.92), in: Circle())
+                        .overlay(Circle().stroke(AppTheme.outline, lineWidth: 1))
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Use \(example.kind.rawValue.lowercased()) example")
-                .accessibilityHint("Fills the message editor without starting analysis.")
-            }
-        } header: {
-            Text("Quick Examples")
-        } footer: {
-            Text("The ambiguous example helps show why a model score is not certainty.")
-        }
-    }
-
-    private var editorSection: some View {
-        Section {
-            ZStack(alignment: .topLeading) {
-                if viewModel.message.isEmpty {
-                    Text("Paste or type an English SMS message")
-                        .foregroundStyle(.tertiary)
-                        .padding(.horizontal, AppSpacing.extraSmall)
-                        .padding(.vertical, AppSpacing.small)
-                        .accessibilityHidden(true)
-                }
-
-                TextEditor(text: $viewModel.message)
-                    .focused($isEditorFocused)
-                    .frame(minHeight: 144)
-                    .scrollContentBackground(.hidden)
-                    .accessibilityLabel("Message to analyze")
-                    .accessibilityHint("Enter or paste the message you want to check.")
-                    .disabled(viewModel.isAnalyzing)
+                .accessibilityLabel("How Spam Check works")
+                .accessibilityHint("Opens privacy, dataset, and model information.")
             }
 
-            if case .failure(.emptyInput) = viewModel.state {
-                Label("Enter a message before analyzing.", systemImage: "exclamationmark.circle")
-                    .font(.footnote)
-                    .foregroundStyle(.red)
-                    .accessibilityLabel("Error. Enter a message before analyzing.")
-            }
-        } header: {
-            HStack {
-                Text("Message")
-                Spacer()
-                Button("Clear", systemImage: "xmark.circle") {
-                    cancelAndReset()
-                    isEditorFocused = true
-                }
-                .disabled(viewModel.message.isEmpty && !viewModel.isAnalyzing)
+            GuardianMascotView(mood: viewModel.isAnalyzing ? .checking : .idle, size: 176)
+                .accessibilityHidden(true)
+
+            Label("Private • On-device", systemImage: "lock.shield.fill")
+                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .foregroundStyle(AppTheme.safe)
+                .padding(.horizontal, AppSpacing.medium)
                 .frame(minHeight: AppSpacing.minimumTouchTarget)
-                .accessibilityHint("Clears the message and current result.")
-            }
-        } footer: {
-            Text("Confidence is a model score, not certainty. Independently verify suspicious or unexpected messages.")
+                .background(AppTheme.safeSurface, in: Capsule())
+                .accessibilityLabel("Private. Analysis runs on this device.")
         }
+        .accessibilityElement(children: .contain)
     }
 
-    private var analyzeSection: some View {
-        Section {
-            Button(action: startAnalysis) {
+    private var messageCard: some View {
+        AppCard {
+            VStack(alignment: .leading, spacing: AppSpacing.medium) {
                 HStack {
+                    Text("Message")
+                        .font(.system(.headline, design: .rounded, weight: .bold))
+                        .foregroundStyle(AppTheme.ink)
+
                     Spacer()
-                    if viewModel.isAnalyzing {
-                        ProgressView()
-                            .controlSize(.small)
-                        Text("Analyzing…")
-                    } else {
-                        Label("Analyze Message", systemImage: "checkmark.shield")
+
+                    Button {
+                        cancelAndReset()
+                        isEditorFocused = true
+                    } label: {
+                        Label("Clear", systemImage: "xmark.circle.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.secondaryText)
+                            .frame(minHeight: AppSpacing.minimumTouchTarget)
                     }
-                    Spacer()
+                    .disabled(viewModel.message.isEmpty && !viewModel.isAnalyzing)
+                    .accessibilityHint("Clears the message and current result.")
                 }
-                .frame(minHeight: AppSpacing.minimumTouchTarget)
+
+                ZStack(alignment: .topLeading) {
+                    if viewModel.message.isEmpty {
+                        Text("Paste or type an English SMS message")
+                            .foregroundStyle(AppTheme.secondaryText.opacity(0.75))
+                            .padding(.horizontal, AppSpacing.medium)
+                            .padding(.vertical, AppSpacing.small)
+                            .accessibilityHidden(true)
+                    }
+
+                    TextEditor(text: $viewModel.message)
+                        .focused($isEditorFocused)
+                        .frame(minHeight: 132)
+                        .padding(.horizontal, AppSpacing.small)
+                        .scrollContentBackground(.hidden)
+                        .foregroundStyle(AppTheme.ink)
+                        .accessibilityLabel("Message")
+                        .accessibilityHint("Enter or paste the message you want to check.")
+                        .disabled(viewModel.isAnalyzing)
+                }
+                .background(AppTheme.surfaceMuted, in: RoundedRectangle(cornerRadius: AppTheme.fieldRadius))
+                .overlay {
+                    RoundedRectangle(cornerRadius: AppTheme.fieldRadius)
+                        .stroke(
+                            isEditorFocused ? AppTheme.primary : AppTheme.outline,
+                            lineWidth: isEditorFocused ? 2 : 1
+                        )
+                }
+
+                if case .failure(.emptyInput) = viewModel.state {
+                    Label("Enter a message before checking.", systemImage: "exclamationmark.circle.fill")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(AppTheme.warning)
+                        .accessibilityLabel("Error. Enter a message before checking.")
+                }
+
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: AppSpacing.small) {
+                        inputHint
+                        Spacer(minLength: AppSpacing.small)
+                        exampleButton
+                    }
+
+                    VStack(alignment: .leading, spacing: AppSpacing.small) {
+                        inputHint
+                        exampleButton
+                    }
+                }
             }
-            .buttonStyle(.borderedProminent)
-            .disabled(viewModel.isAnalyzing)
-            .accessibilityHint("Analyzes the message with the on-device Core ML model.")
         }
-        .listRowBackground(Color.clear)
+    }
+
+    private var inputHint: some View {
+        Label("English messages work best", systemImage: "text.bubble")
+            .font(.footnote)
+            .foregroundStyle(AppTheme.secondaryText)
+            .accessibilityElement(children: .combine)
+    }
+
+    private var exampleButton: some View {
+        Button {
+            isEditorFocused = false
+            activeSheet = .examples
+        } label: {
+            Label("Try an example", systemImage: "sparkles")
+                .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .frame(minHeight: AppSpacing.minimumTouchTarget)
+        }
+        .buttonStyle(.bordered)
+        .tint(AppTheme.primary)
+        .disabled(viewModel.isAnalyzing)
+        .accessibilityHint("Opens three walkthrough messages. Selecting one does not start analysis.")
+    }
+
+    private var checkButton: some View {
+        Button(action: startAnalysis) {
+            HStack(spacing: AppSpacing.small) {
+                if viewModel.isAnalyzing {
+                    ProgressView()
+                        .tint(.white)
+                    Text("Checking…")
+                } else {
+                    Image(systemName: "checkmark.shield.fill")
+                    Text("Check Message")
+                }
+            }
+        }
+        .buttonStyle(PrimaryActionButtonStyle())
+        .disabled(viewModel.isAnalyzing)
+        .accessibilityHint("Checks the message with the on-device model.")
     }
 
     @ViewBuilder
-    private var statusSection: some View {
-        if viewModel.state != .idle {
-            Section("Analysis Result") {
-                AnalysisStatusView(
-                    state: viewModel.state,
-                    persistenceWarning: viewModel.persistenceWarning,
-                    retry: startAnalysis,
-                    reset: {
-                        cancelAndReset()
-                        isEditorFocused = true
-                    }
-                )
+    private func sheetContent(for sheet: ActiveCheckSheet) -> some View {
+        switch sheet {
+        case .help:
+            CheckHelpSheet()
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+        case .examples:
+            DemoExamplePickerSheet { example in
+                viewModel.message = example.message
+                shouldFocusEditorAfterSheet = true
+                activeSheet = nil
             }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        case let .result(result):
+            AnalysisResultSheet(
+                result: result,
+                persistenceWarning: viewModel.persistenceWarning,
+                onCheckAnother: {
+                    activeSheet = nil
+                }
+            )
+            .interactiveDismissDisabled(false)
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -199,6 +291,18 @@ struct AnalysisView: View {
         viewModel.reset()
     }
 
+    private func handleSheetDismissal() {
+        if case .success = viewModel.state {
+            cancelAndReset()
+            return
+        }
+
+        if shouldFocusEditorAfterSheet {
+            shouldFocusEditorAfterSheet = false
+            isEditorFocused = true
+        }
+    }
+
     private func handleStateChange(
         oldValue: AnalysisViewModel.State,
         newValue: AnalysisViewModel.State
@@ -210,25 +314,116 @@ struct AnalysisView: View {
         }
 
         switch newValue {
-        case .success(let result) where hapticFeedback:
-            if result.label == .suspicious {
-                warningFeedbackTrigger += 1
-            } else {
-                successFeedbackTrigger += 1
+        case let .success(result):
+            activeSheet = .result(result)
+            if hapticFeedback {
+                if result.label == .suspicious {
+                    warningFeedbackTrigger += 1
+                } else {
+                    successFeedbackTrigger += 1
+                }
             }
         case .failure(.emptyInput):
             isEditorFocused = true
             if hapticFeedback { errorFeedbackTrigger += 1 }
         case .failure:
             if hapticFeedback { errorFeedbackTrigger += 1 }
-        case .idle, .loading, .success:
+        case .idle, .loading:
             break
         }
     }
 }
 
-#Preview {
+private enum ActiveCheckSheet: Identifiable {
+    case help
+    case examples
+    case result(AnalysisResult)
+
+    var id: String {
+        switch self {
+        case .help: "help"
+        case .examples: "examples"
+        case .result: "result"
+        }
+    }
+}
+
+#Preview("Idle") {
     NavigationStack {
         AnalysisView(mlService: MultinomialNaiveBayesService())
+    }
+}
+
+#Preview("Dark") {
+    NavigationStack {
+        AnalysisView(mlService: MultinomialNaiveBayesService())
+    }
+    .preferredColorScheme(.dark)
+}
+
+#Preview("Filled Editor") {
+    NavigationStack {
+        AnalysisView(
+            mlService: PreviewMLService(outcome: .legitimate),
+            initialMessage: DemoExample.all[1].message
+        )
+    }
+}
+
+#Preview("Loading") {
+    NavigationStack {
+        AnalysisView(
+            mlService: PreviewMLService(outcome: .loading),
+            initialMessage: DemoExample.all[0].message,
+            startsAnalysisOnAppear: true
+        )
+    }
+}
+
+#Preview("Empty Validation") {
+    NavigationStack {
+        AnalysisView(
+            mlService: PreviewMLService(outcome: .legitimate),
+            startsAnalysisOnAppear: true
+        )
+    }
+}
+
+#Preview("Service Failure") {
+    NavigationStack {
+        AnalysisView(
+            mlService: PreviewMLService(outcome: .failure),
+            initialMessage: DemoExample.all[2].message,
+            startsAnalysisOnAppear: true
+        )
+    }
+}
+
+#Preview("Accessibility Text") {
+    NavigationStack {
+        AnalysisView(mlService: MultinomialNaiveBayesService())
+    }
+    .environment(\.dynamicTypeSize, .accessibility3)
+}
+
+private struct PreviewMLService: MLService {
+    enum Outcome: Sendable {
+        case legitimate
+        case loading
+        case failure
+    }
+
+    let outcome: Outcome
+
+    func analyze(_ request: AnalysisRequest) async throws -> AnalysisResult {
+        switch outcome {
+        case .legitimate:
+            return AnalysisResult(label: .legitimate, confidence: 0.84, model: .coreMLMaxEnt)
+        case .loading:
+            try await Task.sleep(for: .seconds(3_600))
+            return AnalysisResult(label: .legitimate, confidence: 0.84, model: .coreMLMaxEnt)
+        case .failure:
+            throw MLServiceError.predictionFailed
+        }
     }
 }
