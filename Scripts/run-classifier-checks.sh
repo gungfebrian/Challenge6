@@ -22,6 +22,9 @@ swiftc \
     "$repository_directory/Challenge6/Features/Analysis/Services/SpamTrainingDataset.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MultinomialNaiveBayesService.swift" \
     "$repository_directory/Challenge6/Features/Analysis/ViewModels/AnalysisViewModel.swift" \
+    "$repository_directory/Challenge6/Features/History/Models/AnalysisHistoryEntry.swift" \
+    "$repository_directory/Challenge6/Features/History/Services/AnalysisHistorySaving.swift" \
+    "$repository_directory/Challenge6/Features/History/Services/HistoryRetentionPolicy.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestSupport.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TextTokenizerTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TokenBagTests.swift" \
@@ -32,6 +35,7 @@ swiftc \
     "$repository_directory/Tests/Challenge6CoreTests/CoreMLServiceContractTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/MultinomialNaiveBayesClassifierTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/AnalysisViewModelTests.swift" \
+    "$repository_directory/Tests/Challenge6CoreTests/HistoryRetentionPolicyTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestMain.swift" \
     -o "$test_binary"
 
