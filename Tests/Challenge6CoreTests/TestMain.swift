@@ -11,6 +11,8 @@ enum Challenge6CoreTests {
         await CoreMLServiceContractTests.run()
         await AnalysisViewModelTests.run()
         HistoryRetentionPolicyTests.run()
+        AppPreferencesTests.run()
+        try! SwiftDataHistoryStoreTests.run()
 
         print("Challenge6 checks passed")
     }
