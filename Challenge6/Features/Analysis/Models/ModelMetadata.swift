@@ -4,19 +4,25 @@ struct ModelMetadata: Equatable, Sendable {
     let version: String
     let displayName: String
 
-    static let coreMLMaxEnt = ModelMetadata(
+    nonisolated init(identifier: String, version: String, displayName: String) {
+        self.identifier = identifier
+        self.version = version
+        self.displayName = displayName
+    }
+
+    nonisolated static let coreMLMaxEnt = ModelMetadata(
         identifier: "SpamClassifierMaxEnt",
         version: "1.0.0",
         displayName: "Core ML MaxEnt"
     )
 
-    static let educationalNaiveBayes = ModelMetadata(
+    nonisolated static let educationalNaiveBayes = ModelMetadata(
         identifier: "MultinomialNaiveBayes",
         version: "learning-baseline-1",
         displayName: "Naive Bayes Learning Baseline"
     )
 
-    static let deterministicDemo = ModelMetadata(
+    nonisolated static let deterministicDemo = ModelMetadata(
         identifier: "DeterministicDemo",
         version: "preview-1",
         displayName: "Preview Classifier"

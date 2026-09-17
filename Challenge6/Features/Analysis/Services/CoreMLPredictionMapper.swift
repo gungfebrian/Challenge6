@@ -5,7 +5,7 @@ enum CoreMLPredictionMappingError: Error, Equatable, Sendable {
 }
 
 enum CoreMLPredictionMapper {
-    static func map(
+    nonisolated static func map(
         hypotheses: [String: Double],
         metadata: ModelMetadata
     ) throws -> AnalysisResult {

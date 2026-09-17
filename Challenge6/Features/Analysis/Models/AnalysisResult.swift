@@ -15,7 +15,7 @@ struct AnalysisResult: Equatable, Sendable {
     let confidence: Double
     let model: ModelMetadata
 
-    init(
+    nonisolated init(
         label: MessageLabel,
         confidence: Double,
         model: ModelMetadata = .educationalNaiveBayes

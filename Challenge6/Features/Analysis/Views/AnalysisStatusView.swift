@@ -110,6 +110,7 @@ private struct ResultContent: View {
             Label(title, systemImage: systemImage)
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(tint)
+                .accessibilityLabel("\(title). Model confidence \(confidenceText). \(recommendation)")
 
             Gauge(value: result.confidence, in: 0...1) {
                 Text("Model confidence")
@@ -150,7 +151,6 @@ private struct ResultContent: View {
                 .frame(minHeight: AppSpacing.minimumTouchTarget)
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("\(title). Model confidence \(confidenceText). \(recommendation)")
     }
 }
 

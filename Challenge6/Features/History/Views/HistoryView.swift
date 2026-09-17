@@ -12,6 +12,12 @@ struct HistoryView: View {
         Group {
             if store == nil {
                 unavailableState
+            } else if let errorMessage, entries.isEmpty {
+                ContentUnavailableView(
+                    "History Could Not Load",
+                    systemImage: "exclamationmark.triangle",
+                    description: Text(errorMessage)
+                )
             } else if entries.isEmpty {
                 emptyState
             } else {
@@ -157,10 +163,11 @@ private struct HistoryRow: View {
                     .font(.body)
                     .lineLimit(2)
 
-                HStack {
-                    Text(title)
-                    Text(entry.confidence, format: .percent.precision(.fractionLength(0)))
-                    Spacer()
+                VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
+                    HStack {
+                        Text(title)
+                        Text(entry.confidence, format: .percent.precision(.fractionLength(0)))
+                    }
                     Text(entry.analyzedAt, format: .relative(presentation: .named))
                 }
                 .font(.caption)

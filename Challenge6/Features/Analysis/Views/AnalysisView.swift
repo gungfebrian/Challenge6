@@ -41,6 +41,10 @@ struct AnalysisView: View {
         .sensoryFeedback(.warning, trigger: warningFeedbackTrigger)
         .sensoryFeedback(.error, trigger: errorFeedbackTrigger)
         .onChange(of: viewModel.state, handleStateChange)
+        .onChange(of: viewModel.persistenceWarning) { _, warning in
+            guard let warning else { return }
+            AccessibilityNotification.Announcement("History warning. \(warning.message)").post()
+        }
         .onDisappear {
             analysisTask?.cancel()
         }

@@ -6,7 +6,16 @@ import NaturalLanguage
 actor CoreMLTextClassifierService: MLService {
     typealias PredictionProvider = @Sendable (String) throws -> [String: Double]
 
-    private let model: NLModel?
+    /// `NLModel` is not Sendable, so this private wrapper may only be read by its owning actor.
+    private final class ModelRuntime: @unchecked Sendable {
+        let model: NLModel
+
+        init(model: NLModel) {
+            self.model = model
+        }
+    }
+
+    private let runtime: ModelRuntime?
     private let predictionProvider: PredictionProvider?
     private let metadata: ModelMetadata
 
@@ -22,7 +31,7 @@ actor CoreMLTextClassifierService: MLService {
         do {
             let configuration = MLModelConfiguration()
             let coreMLModel = try MLModel(contentsOf: modelURL, configuration: configuration)
-            model = try NLModel(mlModel: coreMLModel)
+            runtime = ModelRuntime(model: try NLModel(mlModel: coreMLModel))
             predictionProvider = nil
             self.metadata = metadata
         } catch {
@@ -34,7 +43,7 @@ actor CoreMLTextClassifierService: MLService {
         metadata: ModelMetadata,
         predictionProvider: @escaping PredictionProvider
     ) {
-        model = nil
+        runtime = nil
         self.predictionProvider = predictionProvider
         self.metadata = metadata
     }
@@ -46,8 +55,8 @@ actor CoreMLTextClassifierService: MLService {
         do {
             if let predictionProvider {
                 hypotheses = try predictionProvider(request.text)
-            } else if let model {
-                hypotheses = model.predictedLabelHypotheses(for: request.text, maximumCount: 2)
+            } else if let runtime {
+                hypotheses = runtime.model.predictedLabelHypotheses(for: request.text, maximumCount: 2)
             } else {
                 throw MLServiceError.modelUnavailable
             }
