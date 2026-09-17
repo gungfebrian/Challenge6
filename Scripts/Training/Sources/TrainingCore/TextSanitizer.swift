@@ -13,11 +13,11 @@ enum TextSanitizer {
 
     // Ordering is intentional: broad numeric patterns run only after contextual identifiers.
     private static let replacements: [Replacement] = [
-        Replacement(#"\b(?:https?://|www\.)[^\s,]+"#, placeholder: "<URL>", options: .caseInsensitive),
         Replacement(#"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"#, placeholder: "<EMAIL>", options: .caseInsensitive),
-        Replacement(#"\b(?:account|acct|a/c)\s*(?:number|no\.?|#)?\s*[:=-]?\s*[A-Z0-9-]{4,}\b"#, placeholder: "<ACCOUNT>", options: .caseInsensitive),
-        Replacement(#"(?:[$£€₹]\s?\d[\d,.]*|\b(?:USD|GBP|EUR|INR)\s?\d[\d,.]*|\b\d[\d,.]*\s?(?:USD|GBP|EUR|INR)\b)"#, placeholder: "<AMOUNT>", options: .caseInsensitive),
-        Replacement(#"(?<![A-Z0-9])\+?\d(?:[\s().-]*\d){6,}(?![A-Z0-9])"#, placeholder: "<PHONE>", options: .caseInsensitive)
+        Replacement(#"(?:\b(?:https?://|www\.)[^\s,]+|\b[A-Z0-9.-]+\.(?:com|co\.uk|org|net|io|me)(?:/[^\s,]*)?)"#, placeholder: "<URL>", options: .caseInsensitive),
+        Replacement(#"\b(?:account|acct|a/c|password|passcode|pin|otp)\s*(?:number|no\.?|#|is)?\s*[:=-]?\s*[A-Z0-9-]{4,}\b"#, placeholder: "<ACCOUNT>", options: .caseInsensitive),
+        Replacement(#"(?:[$£€₹]\s?\d[\d,.]*|\b(?:USD|GBP|EUR|INR)\s?\d[\d,.]*|\b\d[\d,.]*\s?(?:USD|GBP|EUR|INR)\b|\b\d+(?:[.,]\d+)?p(?=\b|/))"#, placeholder: "<AMOUNT>", options: .caseInsensitive),
+        Replacement(#"(?<![A-Z0-9])\+?\d(?:[\s().-]*\d){4,}(?:p)?(?![A-Z0-9])"#, placeholder: "<PHONE>", options: .caseInsensitive)
     ]
 
     static func sanitize(_ text: String) -> String {

@@ -33,13 +33,18 @@ enum PreparationTests {
     }
 
     private static func sanitizesProhibitedIdentifiers() {
-        let input = "Email Alex.User+demo@example.com or call +1 (555) 123-4567. Visit https://example.com/pay?id=42, pay $1,200.50, account 12345678."
+        let input = "Email Alex.User+demo@example.com or call +1 (555) 123-4567. Text 08700621170150p per message or 69911. Visit https://example.com/pay?id=42 or cashbin.co.uk/deal, pay $1,200.50 or 35p/txt, account 12345678, password is 391784."
         let sanitized = TextSanitizer.sanitize(input)
 
         expect(!sanitized.contains("example.com"), "URLs and email domains should not remain in prepared text")
         expect(!sanitized.contains("555"), "Phone digits should not remain in prepared text")
+        expect(!sanitized.contains("08700621170150"), "Phone numbers followed by tariff text should not remain in prepared text")
+        expect(!sanitized.contains("69911"), "Messaging short codes should not remain in prepared text")
         expect(!sanitized.contains("1,200"), "Amounts should not remain in prepared text")
+        expect(!sanitized.contains("35p"), "Pence-style prices should not remain in prepared text")
         expect(!sanitized.contains("12345678"), "Account identifiers should not remain in prepared text")
+        expect(!sanitized.contains("391784"), "Credential values should not remain in prepared text")
+        expect(!sanitized.contains("cashbin.co.uk"), "Bare domain URLs should not remain in prepared text")
         expect(sanitized.contains("<EMAIL>"), "Email addresses should use a stable placeholder")
         expect(sanitized.contains("<PHONE>"), "Phone numbers should use a stable placeholder")
         expect(sanitized.contains("<URL>"), "URLs should use a stable placeholder")
