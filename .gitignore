@@ -19,6 +19,11 @@ DerivedData/
 .build/
 .swiftpm/xcode/package.xcworkspace/xcuserdata/
 
+# Local-only training inputs and generated experiment workspaces
+.local-data/
+Scripts/Training/.build/
+Scripts/Training/Output/
+
 # Playgrounds
 timeline.xctimeline
 playground.xcworkspace

@@ -1,0 +1,30 @@
+{
+  "dataset_id": "uci-sms-spam-collection-v1",
+  "title": "SMS Spam Collection",
+  "version": "2011-03-15",
+  "retrieved_at": "2026-09-17",
+  "canonical_page": "https://archive.ics.uci.edu/dataset/228/sms%2Bspam%2Bcollection",
+  "download_url": "https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip",
+  "archive_sha256": "1587ea43e58e82b14ff1f5425c88e17f8496bfcdb67a583dbff9eefaf9963ce3",
+  "data_file": "SMSSpamCollection",
+  "data_file_sha256": "7d039a24a6083ed9ef0f806ebad56bbb976e3aeb8de05669173bfdc4996c239d",
+  "expected_rows": 5574,
+  "original_labels": ["ham", "spam"],
+  "normalized_labels": ["legitimate", "suspicious"],
+  "license": {
+    "name": "Creative Commons Attribution 4.0 International",
+    "identifier": "CC-BY-4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "citation": {
+    "authors": "Almeida, T. & Hidalgo, J.",
+    "year": 2011,
+    "repository": "UCI Machine Learning Repository",
+    "doi": "https://doi.org/10.24432/C5CC84"
+  },
+  "repository_policy": {
+    "commit_raw_messages": false,
+    "commit_derived_messages": false,
+    "local_input_path": ".local-data/uci-sms-spam/raw/extracted/SMSSpamCollection"
+  }
+}
