@@ -55,7 +55,7 @@ struct AnalysisView: View {
                     .frame(maxWidth: AppTheme.compactContentWidth)
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, AppSpacing.medium)
-                    .padding(.top, AppSpacing.small)
+                    .padding(.top, AppSpacing.extraLarge)
                     .padding(.bottom, AppSpacing.extraLarge * 3)
                 }
                 .defaultScrollAnchor(.top)
@@ -93,7 +93,7 @@ struct AnalysisView: View {
             HStack(alignment: .top, spacing: AppSpacing.small) {
                 VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
                     Text("Spam Check")
-                        .font(.system(.title2, design: .rounded, weight: .bold))
+                        .font(.system(.title, design: .rounded, weight: .bold))
                         .foregroundStyle(AppTheme.ink)
 
                     Text("Check a message before you trust it.")
