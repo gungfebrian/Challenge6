@@ -129,7 +129,7 @@ struct AnalysisView: View {
             )
                 .accessibilityHidden(true)
 
-            Label("Private • On-device", systemImage: "lock.shield.fill")
+            Label("Private On device", systemImage: "lock.shield.fill")
                 .font(.system(.subheadline, design: .rounded, weight: .semibold))
                 .dynamicTypeSize(.xSmall ... .xxxLarge)
                 .foregroundStyle(AppTheme.safe)
