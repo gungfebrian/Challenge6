@@ -12,6 +12,7 @@ enum Challenge6CoreTests {
         await AnalysisViewModelTests.run()
         HistoryRetentionPolicyTests.run()
         AppPreferencesTests.run()
+        AnalysisPresentationPolicyTests.run()
         try! SwiftDataHistoryStoreTests.run()
 
         print("Challenge6 checks passed")

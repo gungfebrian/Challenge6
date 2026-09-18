@@ -69,7 +69,7 @@ struct HistoryView: View {
     private var emptyState: some View {
         ScrollView {
             VStack(spacing: AppSpacing.medium) {
-                GuardianMascotView(mood: .idle, size: 156)
+                GuardianMascotView(mood: .idle, size: 120)
                     .accessibilityHidden(true)
 
                 Text("No checks yet")

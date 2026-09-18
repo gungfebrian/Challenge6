@@ -10,6 +10,7 @@ swiftc \
     "$repository_directory/Challenge6/Features/Analysis/Models/AnalysisRequest.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Models/AnalysisResult.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Models/ModelMetadata.swift" \
+    "$repository_directory/Challenge6/Features/Analysis/Models/AnalysisPresentationPolicy.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MLService.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/CoreMLPredictionMapper.swift" \
     "$repository_directory/Challenge6/Features/Analysis/Services/MLServiceError.swift" \
@@ -40,6 +41,7 @@ swiftc \
     "$repository_directory/Tests/Challenge6CoreTests/AnalysisViewModelTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/HistoryRetentionPolicyTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/AppPreferencesTests.swift" \
+    "$repository_directory/Tests/Challenge6CoreTests/AnalysisPresentationPolicyTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/SwiftDataHistoryStoreTests.swift" \
     "$repository_directory/Tests/Challenge6CoreTests/TestMain.swift" \
     -o "$test_binary"

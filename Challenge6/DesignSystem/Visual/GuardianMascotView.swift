@@ -28,9 +28,20 @@ enum GuardianMood: String {
 struct GuardianMascotView: View {
     let mood: GuardianMood
     let size: CGFloat
+    let allowsIdleMotion: Bool
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var animationPhase = false
+
+    init(
+        mood: GuardianMood,
+        size: CGFloat,
+        allowsIdleMotion: Bool = false
+    ) {
+        self.mood = mood
+        self.size = size
+        self.allowsIdleMotion = allowsIdleMotion
+    }
 
     var body: some View {
         ZStack {
@@ -66,8 +77,8 @@ struct GuardianMascotView: View {
     }
 
     private var idleOffset: CGFloat {
-        guard !reduceMotion, mood == .idle, animationPhase else { return 0 }
-        return -3
+        guard mood == .idle, animationPhase else { return 0 }
+        return -2
     }
 
     private var checkingScale: CGFloat {
@@ -86,12 +97,31 @@ struct GuardianMascotView: View {
     }
 
     private var activeAnimation: Animation? {
-        guard !reduceMotion, mood == .idle || mood == .checking else { return nil }
+        guard GuardianMotionPolicy.shouldAnimate(
+            mood.animationState,
+            reduceMotion: reduceMotion,
+            allowsIdleMotion: allowsIdleMotion
+        ) else { return nil }
         return .easeInOut(duration: 1.8).repeatForever(autoreverses: true)
     }
 
     private func updateAnimation() {
-        animationPhase = !reduceMotion && (mood == .idle || mood == .checking)
+        animationPhase = GuardianMotionPolicy.shouldAnimate(
+            mood.animationState,
+            reduceMotion: reduceMotion,
+            allowsIdleMotion: allowsIdleMotion
+        )
+    }
+}
+
+private extension GuardianMood {
+    var animationState: GuardianAnimationState {
+        switch self {
+        case .idle: .idle
+        case .checking: .checking
+        case .safe: .safe
+        case .warning: .warning
+        }
     }
 }
 

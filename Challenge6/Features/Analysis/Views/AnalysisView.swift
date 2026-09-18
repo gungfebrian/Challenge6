@@ -12,6 +12,7 @@ struct AnalysisView: View {
     @State private var errorFeedbackTrigger = 0
     @FocusState private var isEditorFocused: Bool
     @AppStorage(PreferenceKeys.hapticFeedback) private var hapticFeedback = true
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     private let startsAnalysisOnAppear: Bool
 
     init(
@@ -35,40 +36,31 @@ struct AnalysisView: View {
         ZStack {
             SkyBackdrop()
 
-            ScrollView {
-                VStack(spacing: AppSpacing.large) {
-                    identitySection
-                    messageCard
-                    AnalysisStatusView(state: viewModel.state, retry: startAnalysis)
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(spacing: AppSpacing.large) {
+                        identitySection(
+                            mascotSize: AnalysisPhoneLayout.mascotSize(
+                                viewportHeight: geometry.size.height,
+                                usesAccessibilityText: dynamicTypeSize.isAccessibilitySize
+                            )
+                        )
+                        messageCard
+                        AnalysisStatusView(state: viewModel.state, retry: startAnalysis)
+                        checkButton
+                    }
+                    .frame(maxWidth: AppTheme.compactContentWidth)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, AppSpacing.medium)
+                    .padding(.top, AppSpacing.small)
+                    .padding(.bottom, AppSpacing.extraLarge * 3)
                 }
-                .frame(maxWidth: AppTheme.compactContentWidth)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, AppSpacing.medium)
-                .padding(.top, AppSpacing.small)
-                .padding(.bottom, AppSpacing.extraLarge)
+                .defaultScrollAnchor(.top)
+                .scrollIndicators(.visible)
+                .scrollDismissesKeyboard(.interactively)
             }
-            .scrollDismissesKeyboard(.interactively)
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            checkButton
-                .padding(.horizontal, AppSpacing.medium)
-                .padding(.top, AppSpacing.small)
-                .padding(.bottom, AppSpacing.extraSmall)
-                .background(
-                    LinearGradient(
-                        colors: [AppTheme.background.opacity(0), AppTheme.background],
-                        startPoint: .top,
-                        endPoint: .center
-                    )
-                )
         }
         .toolbar(.hidden, for: .navigationBar)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") { isEditorFocused = false }
-            }
-        }
         .sheet(item: $activeSheet, onDismiss: handleSheetDismissal) { sheet in
             sheetContent(for: sheet)
         }
@@ -90,18 +82,19 @@ struct AnalysisView: View {
         }
     }
 
-    private var identitySection: some View {
-        VStack(spacing: AppSpacing.small) {
+    private func identitySection(mascotSize: Double) -> some View {
+        VStack(spacing: AppSpacing.extraSmall) {
             HStack(alignment: .top, spacing: AppSpacing.small) {
                 VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
                     Text("Spam Check")
-                        .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                        .font(.system(.title, design: .rounded, weight: .bold))
                         .foregroundStyle(AppTheme.ink)
 
                     Text("Check a message before you trust it.")
-                        .font(.body)
+                        .font(.subheadline)
                         .foregroundStyle(AppTheme.secondaryText)
                 }
+                .dynamicTypeSize(.xSmall ... .xxxLarge)
                 .accessibilityElement(children: .combine)
                 .accessibilitySortPriority(3)
 
@@ -123,13 +116,18 @@ struct AnalysisView: View {
                 .accessibilitySortPriority(1)
             }
 
-            GuardianMascotView(mood: viewModel.isAnalyzing ? .checking : .idle, size: 176)
+            GuardianMascotView(
+                mood: viewModel.isAnalyzing ? .checking : .idle,
+                size: CGFloat(mascotSize),
+                allowsIdleMotion: true
+            )
                 .accessibilityHidden(true)
 
             Label("Private • On-device", systemImage: "lock.shield.fill")
                 .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                .dynamicTypeSize(.xSmall ... .xxxLarge)
                 .foregroundStyle(AppTheme.safe)
-                .padding(.horizontal, AppSpacing.medium)
+                .padding(.horizontal, AppSpacing.small)
                 .frame(minHeight: AppSpacing.minimumTouchTarget)
                 .background(AppTheme.safeSurface, in: Capsule())
                 .accessibilityLabel("Private. Analysis runs on this device.")
@@ -145,6 +143,7 @@ struct AnalysisView: View {
                     Text("Message")
                         .font(.system(.headline, design: .rounded, weight: .bold))
                         .foregroundStyle(AppTheme.ink)
+                        .fixedSize(horizontal: true, vertical: false)
 
                     Spacer()
 
@@ -152,12 +151,16 @@ struct AnalysisView: View {
                         cancelAndReset()
                         isEditorFocused = true
                     } label: {
-                        Label("Clear", systemImage: "xmark.circle.fill")
-                            .font(.subheadline.weight(.semibold))
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title3.weight(.semibold))
                             .foregroundStyle(AppTheme.secondaryText)
-                            .frame(minHeight: AppSpacing.minimumTouchTarget)
+                            .frame(
+                                width: AppSpacing.minimumTouchTarget,
+                                height: AppSpacing.minimumTouchTarget
+                            )
                     }
                     .disabled(viewModel.message.isEmpty && !viewModel.isAnalyzing)
+                    .accessibilityLabel("Clear message")
                     .accessibilityHint("Clears the message and current result.")
                 }
 
@@ -196,18 +199,12 @@ struct AnalysisView: View {
                         .accessibilityLabel("Error. Enter a message before checking.")
                 }
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: AppSpacing.small) {
-                        inputHint
-                        Spacer(minLength: AppSpacing.small)
-                        exampleButton
-                    }
+                inputHint
 
-                    VStack(alignment: .leading, spacing: AppSpacing.small) {
-                        inputHint
-                        exampleButton
-                    }
-                }
+                Divider()
+                    .overlay(AppTheme.outline)
+
+                exampleButton
             }
         }
     }
@@ -224,12 +221,29 @@ struct AnalysisView: View {
             isEditorFocused = false
             activeSheet = .examples
         } label: {
-            Label("Try an example", systemImage: "sparkles")
-                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                .frame(minHeight: AppSpacing.minimumTouchTarget)
+            HStack(spacing: AppSpacing.small) {
+                Image(systemName: "text.bubble.fill")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(AppTheme.primary)
+                    .frame(width: 32, height: 32)
+                    .background(AppTheme.cloud, in: Circle())
+                    .accessibilityHidden(true)
+
+                Text("Try a demo message")
+                    .font(.system(.subheadline, design: .rounded, weight: .semibold))
+                    .foregroundStyle(AppTheme.ink)
+
+                Spacer(minLength: AppSpacing.small)
+
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.bold))
+                    .foregroundStyle(AppTheme.secondaryText)
+                    .accessibilityHidden(true)
+            }
+            .frame(maxWidth: .infinity, minHeight: AppSpacing.minimumTouchTarget)
+            .contentShape(Rectangle())
         }
-        .buttonStyle(.bordered)
-        .tint(AppTheme.primary)
+        .buttonStyle(.plain)
         .disabled(viewModel.isAnalyzing)
         .accessibilityHint("Opens three walkthrough messages. Selecting one does not start analysis.")
     }
