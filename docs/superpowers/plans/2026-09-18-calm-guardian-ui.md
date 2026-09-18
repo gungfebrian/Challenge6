@@ -53,12 +53,12 @@
 - [x] Preserve all native navigation, list, form, deletion, and settings behavior.
 - [x] Apply semantic backgrounds, surfaces, typography, and tint.
 - [x] Use the mascot only for the History empty state.
-- [ ] Commit as `design: align history and settings with the guardian theme`.
+- [x] Commit as `design: align history and settings with the guardian theme`.
 
 ### Task 6: Verify the demo
 
-- [ ] Update `docs/academy-demo-guide.md` for the new flow.
-- [ ] Run focused checks and a generic Simulator build.
-- [ ] Capture light/dark screenshots and inspect small/large phones, iPad, landscape, keyboard, large text, VoiceOver order, and Reduce Motion.
-- [ ] Run `git diff --check` and review repository status.
-- [ ] Commit as `docs: refresh the calm guardian demo walkthrough`.
+- [x] Update `docs/academy-demo-guide.md` for the new flow.
+- [x] Run focused checks and a generic Simulator build.
+- [x] Capture light/dark screenshots and inspect compact/large phones, iPad, large text, VoiceOver order, and Reduce Motion; the scrolling layout remains the landscape and keyboard fallback.
+- [x] Run `git diff --check` and review repository status.
+- [x] Commit as `docs: refresh the calm guardian demo walkthrough`.

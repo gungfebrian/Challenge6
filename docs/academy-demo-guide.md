@@ -10,14 +10,15 @@ Do not describe it as a production security product, guaranteed scam detector, p
 
 ## Presentation script
 
-1. Open **Check** and explain that input stays on the device.
-2. Select **Suspicious**. Point out that selecting an example fills the editor but does not analyze automatically.
-3. Tap **Analyze Message**. Explain the actual result: **Likely Spam**, about **95%** model confidence. Confidence is a score, not certainty; it does not identify causal words.
-4. Tap **Check Another Message**, select **Legitimate**, and analyze it. The frozen model returns **Likely Not Spam** at about **99.99%**.
+1. Open **Check** and use the **Private • On-device** capsule to explain that input stays on the device.
+2. Tap **Try an example**, then select **Suspicious**. Point out that selecting an example fills the editor, dismisses the sheet, and does not analyze automatically.
+3. Tap **Check Message**. Explain the focused result sheet: **Likely Spam**, about **95%** model confidence, followed by one practical recommendation. Confidence is a score, not certainty; it does not identify causal words.
+4. Tap **Check Another Message**, open **Try an example**, select **Legitimate**, and check it. The frozen model returns **Likely Not Spam** at about **99.99%**.
 5. Open **History**. Show both locally persisted records and open one detail screen to show full text, date, and model version.
 6. Open **Settings**. Explain the history and haptic controls, local-only storage, no CloudKit, and no analytics. Open **Model & Dataset Information**.
-7. Return to **Check**, select **Ambiguous**, and analyze it. The frozen model returns **Likely Not Spam** at about **50%**, a useful demonstration that missing context can leave the model uncertain.
-8. Close by explaining that the corpus is older and English-focused, the Naive Bayes baseline actually measured better on this holdout, and future work should improve representative data and evaluation rather than overstate the current result.
+7. Return to **Check**, tap the **?** help button, and show the concise dataset, demo-example, privacy, and limitation facts. Open **Model & Dataset Details** to show the full attribution.
+8. Close Help, select **Ambiguous** from **Try an example**, and check it. The frozen model returns **Likely Not Spam** at about **50%**, a useful demonstration that missing context can leave the model uncertain.
+9. Close by explaining that the corpus is older and English-focused, the Naive Bayes baseline actually measured better on this holdout, and future work should improve representative data and evaluation rather than overstate the current result.
 
 Demo predictions are recorded by the training pipeline from the real exported artifact. Never add these examples to training data just to change their outcomes.
 
@@ -93,16 +94,19 @@ Current release:
 
 ## Accessibility and adaptive layout checklist
 
-- Native text styles support Dynamic Type; no fixed font sizes are used.
+- Native text styles support Dynamic Type; the oversized confidence number scales and has a minimum scale factor for narrow widths.
 - Controls use native semantics and at least 44-point targets.
 - Icons accompany result text, so meaning is not conveyed by color alone.
 - Loading, success, failure, and history-save warnings announce through accessibility notifications.
-- The result title summarizes label, confidence, and recommended action; the gauge has an explicit accessibility label and value.
-- Quick examples announce that they fill the editor without analyzing.
+- VoiceOver order on Check is title and subtitle, privacy, message, example action, then primary action.
+- VoiceOver order on the result sheet is verdict, confidence, recommendation, Learn More, then Check Another Message.
+- The confidence progress view has an explicit accessibility label and value.
+- Example rows announce that they fill the editor without analyzing, and the sheet states that the messages are not training records.
 - Destructive actions have destructive roles and confirmation.
 - Each tab owns its navigation stack; forms and lists scroll around compact screens, landscape, keyboard, tab bar, and safe areas.
 - Content width is capped on iPad while remaining fluid on iPhone.
-- The app adds no decorative motion; standard platform transitions respect Reduce Motion.
+- The guardian uses a slow three-point idle float and subtle checking pulse. Both resolve to a static state when Reduce Motion is enabled.
+- The checking state adds an original resolution-independent SVG scan halo; it rotates and fades inside the app-specific guardian component instead of introducing a general animation framework.
 
 ## Troubleshooting
 
