@@ -35,6 +35,9 @@ struct AnalysisView: View {
     var body: some View {
         ZStack {
             SkyBackdrop()
+                .onTapGesture {
+                    isEditorFocused = false
+                }
 
             GeometryReader { geometry in
                 ScrollView {
@@ -58,6 +61,9 @@ struct AnalysisView: View {
                 .defaultScrollAnchor(.top)
                 .scrollIndicators(.visible)
                 .scrollDismissesKeyboard(.interactively)
+                .onTapGesture {
+                    isEditorFocused = false
+                }
             }
         }
         .toolbar(.hidden, for: .navigationBar)
@@ -139,30 +145,10 @@ struct AnalysisView: View {
     private var messageCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: AppSpacing.medium) {
-                HStack {
-                    Text("Message")
-                        .font(.system(.headline, design: .rounded, weight: .bold))
-                        .foregroundStyle(AppTheme.ink)
-                        .fixedSize(horizontal: true, vertical: false)
-
-                    Spacer()
-
-                    Button {
-                        cancelAndReset()
-                        isEditorFocused = true
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title3.weight(.semibold))
-                            .foregroundStyle(AppTheme.secondaryText)
-                            .frame(
-                                width: AppSpacing.minimumTouchTarget,
-                                height: AppSpacing.minimumTouchTarget
-                            )
-                    }
-                    .disabled(viewModel.message.isEmpty && !viewModel.isAnalyzing)
-                    .accessibilityLabel("Clear message")
-                    .accessibilityHint("Clears the message and current result.")
-                }
+                Text("Message")
+                    .font(.system(.headline, design: .rounded, weight: .bold))
+                    .foregroundStyle(AppTheme.ink)
+                    .fixedSize(horizontal: true, vertical: false)
 
                 ZStack(alignment: .topLeading) {
                     if viewModel.message.isEmpty {
