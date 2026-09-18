@@ -33,23 +33,36 @@ struct GuardianMascotView: View {
     @State private var animationPhase = false
 
     var body: some View {
-        Image(mood.assetName)
-            .interpolation(.high)
-            .resizable()
-            .scaledToFit()
-            .frame(width: size, height: size)
-            .offset(y: idleOffset)
-            .scaleEffect(checkingScale)
-            .animation(activeAnimation, value: animationPhase)
-            .accessibilityLabel(mood.accessibilityLabel)
-            .onAppear(perform: updateAnimation)
-            .onChange(of: reduceMotion) { _, _ in
-                updateAnimation()
+        ZStack {
+            if mood == .checking {
+                Image("GuardianMotionHalo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: size * 1.14, height: size * 1.14)
+                    .rotationEffect(haloRotation)
+                    .opacity(haloOpacity)
+                    .accessibilityHidden(true)
             }
-            .onChange(of: mood) { _, _ in
-                animationPhase = false
-                updateAnimation()
-            }
+
+            Image(mood.assetName)
+                .interpolation(.high)
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, height: size)
+        }
+        .frame(width: size, height: size)
+        .offset(y: idleOffset)
+        .scaleEffect(checkingScale)
+        .animation(activeAnimation, value: animationPhase)
+        .accessibilityLabel(mood.accessibilityLabel)
+        .onAppear(perform: updateAnimation)
+        .onChange(of: reduceMotion) { _, _ in
+            updateAnimation()
+        }
+        .onChange(of: mood) { _, _ in
+            animationPhase = false
+            updateAnimation()
+        }
     }
 
     private var idleOffset: CGFloat {
@@ -60,6 +73,16 @@ struct GuardianMascotView: View {
     private var checkingScale: CGFloat {
         guard !reduceMotion, mood == .checking, animationPhase else { return 1 }
         return 1.04
+    }
+
+    private var haloRotation: Angle {
+        guard !reduceMotion else { return .zero }
+        return .degrees(animationPhase ? 10 : -10)
+    }
+
+    private var haloOpacity: Double {
+        guard !reduceMotion else { return 0.58 }
+        return animationPhase ? 0.92 : 0.5
     }
 
     private var activeAnimation: Animation? {

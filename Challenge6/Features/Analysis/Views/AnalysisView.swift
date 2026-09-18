@@ -102,6 +102,8 @@ struct AnalysisView: View {
                         .font(.body)
                         .foregroundStyle(AppTheme.secondaryText)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilitySortPriority(3)
 
                 Spacer(minLength: AppSpacing.small)
 
@@ -110,7 +112,7 @@ struct AnalysisView: View {
                     activeSheet = .help
                 } label: {
                     Image(systemName: "questionmark")
-                        .font(.headline.weight(.bold))
+                        .font(.system(size: 17, weight: .bold))
                         .foregroundStyle(AppTheme.ink)
                         .frame(width: AppSpacing.minimumTouchTarget, height: AppSpacing.minimumTouchTarget)
                         .background(AppTheme.surface.opacity(0.92), in: Circle())
@@ -118,6 +120,7 @@ struct AnalysisView: View {
                 }
                 .accessibilityLabel("How Spam Check works")
                 .accessibilityHint("Opens privacy, dataset, and model information.")
+                .accessibilitySortPriority(1)
             }
 
             GuardianMascotView(mood: viewModel.isAnalyzing ? .checking : .idle, size: 176)
@@ -130,6 +133,7 @@ struct AnalysisView: View {
                 .frame(minHeight: AppSpacing.minimumTouchTarget)
                 .background(AppTheme.safeSurface, in: Capsule())
                 .accessibilityLabel("Private. Analysis runs on this device.")
+                .accessibilitySortPriority(2)
         }
         .accessibilityElement(children: .contain)
     }
@@ -235,7 +239,7 @@ struct AnalysisView: View {
             HStack(spacing: AppSpacing.small) {
                 if viewModel.isAnalyzing {
                     ProgressView()
-                        .tint(.white)
+                        .tint(AppTheme.primaryActionForeground)
                     Text("Checking…")
                 } else {
                     Image(systemName: "checkmark.shield.fill")
@@ -268,6 +272,7 @@ struct AnalysisView: View {
                 result: result,
                 persistenceWarning: viewModel.persistenceWarning,
                 onCheckAnother: {
+                    cancelAndReset()
                     activeSheet = nil
                 }
             )

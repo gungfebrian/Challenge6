@@ -9,6 +9,7 @@ enum AppTheme {
     static let secondaryText = adaptive(light: 0x5E6A82, dark: 0xB8C2D8)
     static let primary = adaptive(light: 0x2D57D9, dark: 0x9AB0FF)
     static let primaryPressed = adaptive(light: 0x2448B6, dark: 0xB4C4FF)
+    static let primaryActionForeground = adaptive(light: 0xFFFFFF, dark: 0x0D1424)
     static let safe = adaptive(light: 0x136A4A, dark: 0x64D4AC)
     static let safeSurface = adaptive(light: 0xE5F5EE, dark: 0x173A33)
     static let warning = adaptive(light: 0xA83C32, dark: 0xFF9A80)

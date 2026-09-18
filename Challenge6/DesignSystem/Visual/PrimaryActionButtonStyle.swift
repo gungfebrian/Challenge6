@@ -6,8 +6,11 @@ struct PrimaryActionButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.system(.headline, design: .rounded, weight: .bold))
+            .dynamicTypeSize(.xSmall ... .accessibility1)
+            .lineLimit(1)
+            .minimumScaleFactor(0.72)
             .frame(maxWidth: .infinity, minHeight: AppTheme.primaryControlHeight)
-            .foregroundStyle(.white)
+            .foregroundStyle(isEnabled ? AppTheme.primaryActionForeground : AppTheme.secondaryText)
             .background {
                 Capsule()
                     .fill(isEnabled ? AppTheme.primaryGradient : LinearGradient(colors: [AppTheme.outline], startPoint: .leading, endPoint: .trailing))
