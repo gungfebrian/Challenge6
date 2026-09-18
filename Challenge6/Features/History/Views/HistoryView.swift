@@ -69,7 +69,11 @@ struct HistoryView: View {
     private var emptyState: some View {
         ScrollView {
             VStack(spacing: AppSpacing.medium) {
-                GuardianMascotView(mood: .idle, size: 120)
+                Image("GuardianEmptyHistory")
+                    .interpolation(.high)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 148, height: 148)
                     .accessibilityHidden(true)
 
                 Text("No checks yet")

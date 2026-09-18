@@ -4,9 +4,21 @@ enum AnalysisPresentationPolicyTests {
     static func run() {
         mascotShrinksForAccessibilityText()
         mascotStaysWithinPhoneFriendlyBounds()
-        checkScreenCanUseSubtleIdleMotion()
+        checkArtworkMatchesAnalysisState()
+        idleMotionRequiresExplicitOptIn()
         historyIdleStateStaysStatic()
         reduceMotionStopsCheckingAnimation()
+    }
+
+    private static func checkArtworkMatchesAnalysisState() {
+        expect(
+            CheckArtwork.assetName(isAnalyzing: false) == "GuardianPasteMessage",
+            "The idle Check screen should invite message entry"
+        )
+        expect(
+            CheckArtwork.assetName(isAnalyzing: true) == "GuardianCheckingScan",
+            "The loading Check screen should show the scan artwork"
+        )
     }
 
     private static func mascotShrinksForAccessibilityText() {
@@ -49,14 +61,14 @@ enum AnalysisPresentationPolicyTests {
         )
     }
 
-    private static func checkScreenCanUseSubtleIdleMotion() {
+    private static func idleMotionRequiresExplicitOptIn() {
         expect(
             GuardianMotionPolicy.shouldAnimate(
                 .idle,
                 reduceMotion: false,
                 allowsIdleMotion: true
             ),
-            "The Check mascot should be able to float while idle"
+            "Reusable mascot motion should require explicit opt-in"
         )
     }
 

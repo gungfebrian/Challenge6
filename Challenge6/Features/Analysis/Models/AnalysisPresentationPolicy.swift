@@ -11,6 +11,12 @@ enum AnalysisPhoneLayout {
     }
 }
 
+enum CheckArtwork {
+    static func assetName(isAnalyzing: Bool) -> String {
+        isAnalyzing ? "GuardianCheckingScan" : "GuardianPasteMessage"
+    }
+}
+
 enum GuardianAnimationState: CaseIterable {
     case idle
     case checking

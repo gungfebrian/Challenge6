@@ -122,11 +122,11 @@ struct AnalysisView: View {
                 .accessibilitySortPriority(1)
             }
 
-            GuardianMascotView(
-                mood: viewModel.isAnalyzing ? .checking : .idle,
-                size: CGFloat(mascotSize),
-                allowsIdleMotion: true
-            )
+            Image(CheckArtwork.assetName(isAnalyzing: viewModel.isAnalyzing))
+                .interpolation(.high)
+                .resizable()
+                .scaledToFit()
+                .frame(width: CGFloat(mascotSize), height: CGFloat(mascotSize))
                 .accessibilityHidden(true)
 
             Label("Private On device", systemImage: "lock.shield.fill")

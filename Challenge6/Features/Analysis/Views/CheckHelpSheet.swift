@@ -19,6 +19,7 @@ struct CheckHelpSheet: View {
         HelpFact(
             id: "privacy",
             systemImage: "lock.shield.fill",
+            assetName: "PrivateOnDevice",
             title: "Private by design",
             body: "Analysis runs locally on your device and messages are not uploaded."
         ),
@@ -34,7 +35,11 @@ struct CheckHelpSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.large) {
-                    GuardianMascotView(mood: .idle, size: 132)
+                    Image("GuardianOnboardingHero")
+                        .interpolation(.high)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 156, height: 156)
                         .accessibilityHidden(true)
 
                     VStack(spacing: AppSpacing.extraSmall) {
@@ -102,6 +107,7 @@ struct CheckHelpSheet: View {
 private struct HelpFact: Identifiable {
     let id: String
     let systemImage: String
+    var assetName: String? = nil
     let title: String
     let body: String
 }
@@ -111,11 +117,25 @@ private struct HelpFactRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: AppSpacing.small) {
-            Image(systemName: fact.systemImage)
-                .foregroundStyle(AppTheme.primary)
-                .frame(width: 40, height: 40)
-                .background(AppTheme.cloud, in: Circle())
-                .accessibilityHidden(true)
+            Group {
+                if let assetName = fact.assetName {
+                    Image(assetName)
+                        .interpolation(.high)
+                        .resizable()
+                        .scaledToFit()
+                        .padding(3)
+                } else {
+                    Image(systemName: fact.systemImage)
+                        .foregroundStyle(AppTheme.primary)
+                }
+            }
+            .frame(width: 40, height: 40)
+            .background {
+                if fact.assetName == nil {
+                    Circle().fill(AppTheme.cloud)
+                }
+            }
+            .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
                 Text(fact.title)

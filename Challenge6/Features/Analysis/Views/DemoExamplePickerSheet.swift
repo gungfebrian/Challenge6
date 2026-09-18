@@ -9,6 +9,21 @@ struct DemoExamplePickerSheet: View {
         NavigationStack {
             List {
                 Section {
+                    HStack {
+                        Spacer(minLength: 0)
+                        Image("GuardianTryDemo")
+                            .interpolation(.high)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 112, height: 112)
+                            .accessibilityHidden(true)
+                        Spacer(minLength: 0)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                Section {
                     ForEach(DemoExample.all) { example in
                         Button {
                             onSelect(example)
