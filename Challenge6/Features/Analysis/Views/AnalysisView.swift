@@ -93,7 +93,7 @@ struct AnalysisView: View {
             HStack(alignment: .top, spacing: AppSpacing.small) {
                 VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
                     Text("Spam Check")
-                        .font(.system(.title, design: .rounded, weight: .bold))
+                        .font(.system(.title2, design: .rounded, weight: .bold))
                         .foregroundStyle(AppTheme.ink)
 
                     Text("Check a message before you trust it.")
