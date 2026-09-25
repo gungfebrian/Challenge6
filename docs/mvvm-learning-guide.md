@@ -9,32 +9,33 @@ Struktur proyek ini sudah baik untuk belajar MVVM karena kode dikelompokkan berd
 ```text
 Challenge6/
 ├── App/
-│   └── Challenge6App.swift
+│   ├── Challenge6App.swift
+│   ├── ApplicationDependencies.swift
+│   └── AppRootView.swift
 ├── DesignSystem/
-│   └── Layout/AppSpacing.swift
+│   ├── Layout/AppSpacing.swift
+│   └── Visual/                   # Warna, kartu, maskot, dan gaya tombol
 ├── Features/
-│   └── Analysis/
-│       ├── Models/
-│       │   ├── AnalysisRequest.swift
-│       │   └── AnalysisResult.swift
-│       ├── Services/
-│       │   ├── MLService.swift
-│       │   ├── DemoMLService.swift
-│       │   ├── TextTokenizer.swift
-│       │   ├── TokenBag.swift
-│       │   ├── PredictionScores.swift
-│       │   ├── TrainingDataValidator.swift
-│       │   ├── SpamTrainingDataset.swift
-│       │   ├── MultinomialNaiveBayesClassifier.swift
-│       │   └── MultinomialNaiveBayesService.swift
-│       ├── ViewModels/
-│       │   └── AnalysisViewModel.swift
-│       └── Views/
-│           ├── AnalysisView.swift
-│           └── AnalysisStatusView.swift
-└── Resources/
-    └── Assets.xcassets
+│   ├── Analysis/
+│   │   ├── Models/               # Request, result, demo, dan aturan presentasi
+│   │   ├── Services/             # Kontrak ML, Core ML, dan baseline Naive Bayes
+│   │   ├── ViewModels/           # AnalysisViewModel
+│   │   └── Views/                # Check, status, contoh, bantuan, dan hasil
+│   └── History/
+│       ├── Models/               # Bentuk record untuk fitur History
+│       ├── Persistence/          # Adapter SwiftData lokal
+│       ├── Services/             # Retensi dan penyimpanan opsional
+│       └── Views/                # Daftar dan detail analisis tersimpan
+├── Resources/
+│   ├── Assets.xcassets/          # Ilustrasi, ikon, dan warna aksen
+│   └── Models/                   # Model Core ML yang dibundel
+└── Settings/
+    ├── AppPreferences.swift      # Kunci dan akses preferensi
+    ├── ModelInformationView.swift
+    └── SettingsView.swift
 ```
+
+Peta ini mencakup seluruh fitur saat ini, bukan hanya jalur analisis. `AppRootView` menyusun tab, `Analysis` memeriksa pesan, `History` membaca hasil yang disimpan, dan `Settings` mengubah preferensi serta menampilkan informasi model. Mulailah dari satu alur lalu ikuti dependency-nya; tidak perlu menghafal setiap nama file sekaligus.
 
 Jangan menambah folder `Repository`, `Coordinator`, `UseCase`, atau `Utilities` hanya karena sering terlihat pada proyek besar. Tambahkan abstraksi ketika ada masalah nyata yang perlu diselesaikan.
 
