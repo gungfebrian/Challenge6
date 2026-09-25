@@ -118,4 +118,6 @@ Challenge6/
 
 `MLService: Sendable` keeps feature state independent of Core ML. `CoreMLTextClassifierService` is an actor that owns the non-Sendable `NLModel`. `AnalysisViewModel` protects against cancellation, duplicate requests, and stale results before saving. SwiftData remains behind a history boundary and uses an explicitly local configuration with CloudKit disabled.
 
-See [the Academy demo and engineering guide](docs/academy-demo-guide.md) for runtime details, presentation steps, known limitations, and troubleshooting. The original [MVVM learning guide](docs/mvvm-learning-guide.md) remains useful background for the project structure.
+## Documentation
+
+Browse the [documentation guide](docs/README.md) for the right next step: app walkthrough and troubleshooting, the Indonesian MVVM learning guide, dataset provenance and split policy, model evaluations, and the reproducible training workflow. The dated design notes are listed separately as project history.
