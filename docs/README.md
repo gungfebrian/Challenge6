@@ -9,6 +9,10 @@ Use this index to find the current product, engineering, and model notes. The ro
 | [Academy demo and engineering guide](academy-demo-guide.md) | Presentation flow, current runtime architecture, privacy behavior, limitations, and troubleshooting |
 | [MVVM learning guide](mvvm-learning-guide.md) | How the SwiftUI features, view models, and services fit together; written in Indonesian |
 
+## Contribute safely
+
+See the root [contributor guide](../CONTRIBUTING.md) for focused checks, data handling, and model release rules.
+
 ## Understand the model and data
 
 | Guide | What it covers |

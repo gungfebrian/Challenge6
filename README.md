@@ -120,4 +120,4 @@ Challenge6/
 
 ## Documentation
 
-Browse the [documentation guide](docs/README.md) for the right next step: app walkthrough and troubleshooting, the Indonesian MVVM learning guide, dataset provenance and split policy, model evaluations, and the reproducible training workflow. The dated design notes are listed separately as project history.
+Browse the [documentation guide](docs/README.md) for app walkthroughs, the Indonesian MVVM learning guide, dataset and model references, and the reproducible training workflow. The [contributor guide](CONTRIBUTING.md) explains focused checks and safe data and model changes. Dated design notes are listed separately as project history.
