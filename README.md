@@ -1,5 +1,9 @@
 # Challenge6 — On-Device Spam Check
 
+<p align="center">
+  <img src="Challenge6/Resources/Assets.xcassets/GuardianOnboardingHero.imageset/guardian-onboarding-hero.png" alt="The blue Guardian mascot inside a protective shield" width="220">
+</p>
+
 Challenge6 is a learning-first, privacy-conscious, on-device spam analysis demo built with SwiftUI, SwiftData, Create ML, and Natural Language. It is an Academy presentation project—not a production security system, guaranteed scam detector, or source of professional safety advice.
 
 ## Run the app
