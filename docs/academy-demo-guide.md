@@ -15,7 +15,7 @@ Do not describe it as a production security product, guaranteed scam detector, p
 3. Tap **Check Message**. Explain the focused result sheet: **Likely Spam**, about **95%** model confidence, followed by one practical recommendation. Confidence is a score, not certainty; it does not identify causal words.
 4. Tap **Check Another Message**, open **Try an example**, select **Legitimate**, and check it. The frozen model returns **Likely Not Spam** at about **99.99%**.
 5. Open **History**. Show both locally persisted records and open one detail screen to show full text, date, and model version.
-6. Open **Settings**. Explain the history and haptic controls, local-only storage, no CloudKit, and no analytics. Open **Model & Dataset Information**.
+6. Open **Settings**. Show the history and haptic controls. Explain that turning off history saving applies to future analyses; it does not erase existing records. Existing messages are removed only after **Clear Analysis History** is confirmed. Point out that records stay on this device, with no CloudKit sync or analytics, then open **Model & Dataset Information**.
 7. Return to **Check**, tap the **?** help button, and show the concise dataset, demo-example, privacy, and limitation facts. Open **Model & Dataset Details** to show the full attribution.
 8. Close Help, select **Ambiguous** from **Try an example**, and check it. The frozen model returns **Likely Not Spam** at about **50%**, a useful demonstration that missing context can leave the model uncertain.
 9. Close by explaining that the corpus is older and English-focused, the Naive Bayes baseline actually measured better on this holdout, and future work should improve representative data and evaluation rather than overstate the current result.
