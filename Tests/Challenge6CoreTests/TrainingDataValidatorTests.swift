@@ -18,6 +18,15 @@ enum TrainingDataValidatorTests {
             ) == .nonPositiveSmoothing,
             "Training data should require positive smoothing"
         )
+        for smoothing in [Double.nan, .infinity] {
+            expect(
+                TrainingDataValidator.issue(
+                    examples: SpamTrainingDataset.examples,
+                    smoothing: smoothing
+                ) == .nonPositiveSmoothing,
+                "Training data should reject non-finite smoothing"
+            )
+        }
         expect(
             TrainingDataValidator.issue(
                 examples: SpamTrainingDataset.examples,

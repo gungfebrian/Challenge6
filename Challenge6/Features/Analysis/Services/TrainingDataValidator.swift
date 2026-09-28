@@ -18,7 +18,7 @@ enum TrainingDataValidator {
         examples: [MultinomialNaiveBayesClassifier.TrainingExample],
         smoothing: Double
     ) -> TrainingDataIssue? {
-        guard smoothing > 0 else {
+        guard smoothing.isFinite, smoothing > 0 else {
             return .nonPositiveSmoothing
         }
 
