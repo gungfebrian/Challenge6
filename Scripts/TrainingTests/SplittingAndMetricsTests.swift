@@ -5,6 +5,7 @@ enum SplittingAndMetricsTests {
         try splitIsDeterministicAndStratified()
         try duplicateGroupsNeverCrossSplits()
         rejectsConflictingLabelsWithinOneGroup()
+        rejectsChangedSamplesWithinASplit()
         computesMetricsFromLiteralPredictions()
     }
 
@@ -74,6 +75,28 @@ enum SplittingAndMetricsTests {
         expectThrows("A group with conflicting labels should be rejected") {
             try GroupedSplitter.split(samples, seed: 1)
         } validate: { $0 as? DatasetSplitError == .conflictingLabels(groupID: "group") }
+    }
+
+    private static func rejectsChangedSamplesWithinASplit() {
+        let original = fixtureSamples(perLabel: 2)
+        let changed = PreparedSample(
+            sampleID: original[0].sampleID,
+            text: "Changed after splitting",
+            label: original[0].label,
+            groupID: original[0].groupID,
+            source: original[0].source,
+            reviewStatus: original[0].reviewStatus
+        )
+        let split = DatasetSplitResult(
+            seed: 1,
+            training: [changed] + Array(original.dropFirst()),
+            validation: [],
+            holdout: []
+        )
+
+        expectThrows("A split must preserve each original sample, not just its ID") {
+            try split.validate(originalSamples: original)
+        } validate: { $0 as? DatasetSplitError == .sampleCoverageMismatch }
     }
 
     private static func computesMetricsFromLiteralPredictions() {

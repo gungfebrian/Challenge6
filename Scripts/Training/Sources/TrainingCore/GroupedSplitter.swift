@@ -26,6 +26,10 @@ struct DatasetSplitResult: Codable, Equatable, Sendable {
               Set(combined.map(\.sampleID)) == Set(originalIDs) else {
             throw DatasetSplitError.sampleCoverageMismatch
         }
+        let originalByID = Dictionary(uniqueKeysWithValues: originalSamples.map { ($0.sampleID, $0) })
+        guard combined.allSatisfy({ originalByID[$0.sampleID] == $0 }) else {
+            throw DatasetSplitError.sampleCoverageMismatch
+        }
 
         var splitByGroup: [String: Int] = [:]
         for (splitIndex, samples) in [training, validation, holdout].enumerated() {
