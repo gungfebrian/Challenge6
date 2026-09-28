@@ -1,6 +1,7 @@
 import Foundation
 
 enum DatasetSplitError: Error, Equatable {
+    case invalidFractions
     case conflictingLabels(groupID: String)
     case duplicateSampleID(String)
     case sampleCoverageMismatch
@@ -56,6 +57,14 @@ enum GroupedSplitter {
         trainingFraction: Double = 0.70,
         validationFraction: Double = 0.15
     ) throws -> DatasetSplitResult {
+        guard trainingFraction.isFinite,
+              validationFraction.isFinite,
+              trainingFraction >= 0,
+              validationFraction >= 0,
+              trainingFraction <= 1,
+              validationFraction <= 1 - trainingFraction else {
+            throw DatasetSplitError.invalidFractions
+        }
         let groups = try makeGroups(samples)
         var partitions: [[PreparedSample]] = [[], [], []]
 

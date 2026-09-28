@@ -6,6 +6,7 @@ enum SplittingAndMetricsTests {
         try duplicateGroupsNeverCrossSplits()
         rejectsConflictingLabelsWithinOneGroup()
         rejectsChangedSamplesWithinASplit()
+        rejectsInvalidSplitFractions()
         computesMetricsFromLiteralPredictions()
     }
 
@@ -97,6 +98,25 @@ enum SplittingAndMetricsTests {
         expectThrows("A split must preserve each original sample, not just its ID") {
             try split.validate(originalSamples: original)
         } validate: { $0 as? DatasetSplitError == .sampleCoverageMismatch }
+    }
+
+    private static func rejectsInvalidSplitFractions() {
+        let samples = fixtureSamples(perLabel: 2)
+        for (training, validation) in [
+            (-0.1, 0.2),
+            (0.8, 0.3),
+            (Double.nan, 0.2),
+            (0.7, .infinity)
+        ] {
+            expectThrows("Invalid fractions must not produce a misleading split") {
+                try GroupedSplitter.split(
+                    samples,
+                    seed: 1,
+                    trainingFraction: training,
+                    validationFraction: validation
+                )
+            } validate: { $0 as? DatasetSplitError == .invalidFractions }
+        }
     }
 
     private static func computesMetricsFromLiteralPredictions() {
